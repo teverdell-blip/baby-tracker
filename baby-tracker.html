@@ -22,52 +22,50 @@
   }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: var(--bg); color: var(--text); max-width: 480px; margin: 0 auto; min-height: 100vh; }
 
-  .header { background: var(--white); border-bottom: 1px solid var(--border); padding: calc(16px + var(--safe-top)) 16px 14px; position: sticky; top: 0; z-index: 20; }
+  .header { background: var(--white); border-bottom: 1px solid var(--border); padding: calc(14px + var(--safe-top)) 16px 12px; position: sticky; top: 0; z-index: 20; }
   .header-inner { display: flex; align-items: center; justify-content: space-between; }
   .header-left { display: flex; align-items: center; gap: 10px; }
   .header-title { font-weight: 700; font-size: 18px; letter-spacing: -0.3px; }
   .header-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .menu-btn { background: #F4F4F4; border: none; border-radius: 10px; padding: 8px 14px; font-size: 20px; cursor: pointer; color: #555; }
 
-  .sync-bar { padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; border-bottom: 1px solid var(--border); }
-  .sync-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  .sync-bar { padding: 7px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; border-bottom: 1px solid var(--border); }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; flex-shrink:0; }
   .sync-left { display: flex; align-items: center; }
   .sync-btn { border: none; border-radius: 8px; padding: 5px 12px; font-size: 12px; font-weight: 700; color: #fff; cursor: pointer; }
 
-  .section-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
-  .today-grid { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 10px; margin-bottom: 14px; }
-  .today-card { border-radius: 14px; padding: 14px 10px; text-align: center; }
-  .today-emoji { font-size: 22px; }
-  .today-count { font-weight: 700; font-size: 28px; line-height: 1.1; margin-top: 4px; }
-  .today-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .today-nap { border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; }
-  .today-nap-right { flex: 1; }
-  .today-nap-count { font-weight: 700; font-size: 28px; line-height: 1.1; }
-  .today-nap-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .today-nap-total { font-size: 12px; font-weight: 600; margin-top: 3px; }
+  /* Active timer bars */
+  .timer-bar { padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .timer-bar-left { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+  .timer-display { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .timer-controls { display: flex; gap: 6px; }
+  .tctl { border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; color: #fff; cursor: pointer; }
 
-  .log-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 24px; }
-  .log-btn { border: none; border-radius: 12px; padding: 12px 6px; font-weight: 600; font-size: 13px; cursor: pointer; color: #fff; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: opacity 0.1s; }
+  .section-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+
+  .today-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .today-card { border-radius: 14px; padding: 12px 8px; text-align: center; }
+  .today-emoji { font-size: 20px; }
+  .today-count { font-weight: 700; font-size: 24px; line-height: 1.1; margin-top: 3px; }
+  .today-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .today-sub { font-size: 11px; font-weight: 600; margin-top: 2px; }
+
+  .log-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .log-btn { border: none; border-radius: 12px; padding: 11px 6px; font-weight: 600; font-size: 12px; cursor: pointer; color: #fff; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: opacity 0.1s; }
   .log-btn:active { opacity: 0.75; }
 
-  /* Active nap banner */
-  .nap-active-bar { background: var(--nap-light); border-bottom: 1px solid #D4CCE8; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
-  .nap-active-left { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #5A4A8A; }
-  .nap-timer { font-size: 20px; font-weight: 800; color: var(--nap); font-variant-numeric: tabular-nums; }
-  .nap-stop-btn { background: var(--nap); border: none; border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; }
-
-  .date-group { margin-bottom: 20px; }
+  .date-group { margin-bottom: 18px; }
   .date-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
   .entry-list { background: var(--white); border-radius: 14px; overflow: hidden; border: 1px solid var(--border); }
-  .entry-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #F3F3F3; }
+  .entry-row { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border-bottom: 1px solid #F3F3F3; }
   .entry-row:last-child { border-bottom: none; }
-  .entry-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .entry-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
   .entry-info { flex: 1; min-width: 0; }
-  .entry-title { font-weight: 600; font-size: 14px; }
+  .entry-title { font-weight: 600; font-size: 13px; }
   .entry-title span { font-weight: 400; color: var(--muted); }
-  .entry-note { font-size: 12px; color: #AAA; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .entry-note { font-size: 11px; color: #AAA; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .entry-meta { text-align: right; flex-shrink: 0; }
-  .entry-time { font-size: 13px; color: var(--muted); }
+  .entry-time { font-size: 12px; color: var(--muted); }
   .entry-who { font-size: 11px; color: #BBB; margin-top: 1px; }
   .remove-btn { background: none; border: none; color: #CCC; font-size: 11px; cursor: pointer; padding: 2px 0; margin-top: 2px; display: block; }
 
@@ -77,41 +75,34 @@
   .empty-sub { font-size: 13px; margin-top: 4px; }
 
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 50; display: flex; align-items: flex-end; }
-  .sheet { background: var(--white); border-radius: 20px 20px 0 0; padding: 24px 20px calc(32px + var(--safe-bottom)); width: 100%; max-width: 480px; margin: 0 auto; max-height: 90vh; overflow-y: auto; }
-  .sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .sheet-title { font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 10px; }
+  .sheet { background: var(--white); border-radius: 20px 20px 0 0; padding: 22px 18px calc(28px + var(--safe-bottom)); width: 100%; max-width: 480px; margin: 0 auto; max-height: 92vh; overflow-y: auto; }
+  .sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .sheet-title { font-weight: 700; font-size: 17px; display: flex; align-items: center; gap: 10px; }
   .close-btn { background: #F0F0F0; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 18px; cursor: pointer; color: #555; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
-  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
-  .pill { padding: 8px 14px; border-radius: 20px; border: 2px solid #E8E8E8; background: #fff; color: #555; font-weight: 600; font-size: 13px; cursor: pointer; }
-  .pill.active-feed { border-color: var(--feed); background: var(--feed-light); color: var(--feed); }
-  .pill.active-nap  { border-color: var(--nap);  background: var(--nap-light);  color: var(--nap); }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 7px; }
+  .pill { padding: 7px 13px; border-radius: 20px; border: 2px solid #E8E8E8; background: #fff; color: #555; font-weight: 600; font-size: 13px; cursor: pointer; }
+  .pill.af { border-color: var(--feed); background: var(--feed-light); color: var(--feed); }
+  .pill.an { border-color: var(--nap); background: var(--nap-light); color: var(--nap); }
 
-  .field { margin-bottom: 16px; }
-  .field label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
-  .field input { width: 100%; padding: 11px 12px; border-radius: 10px; border: 1.5px solid #E8E8E8; font-size: 15px; outline: none; background: #fff; }
-  .field input:focus { border-color: #AACCE8; }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 5px; }
+  .field input, .field select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #E8E8E8; font-size: 15px; outline: none; background: #fff; appearance: none; }
+  .field input:focus, .field select:focus { border-color: #AACCE8; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 
-  .btn-primary { width: 100%; border: none; border-radius: 14px; padding: 16px; font-weight: 700; font-size: 16px; cursor: pointer; color: #fff; margin-bottom: 10px; }
-  .btn-secondary { width: 100%; background: #F0F0F0; border: none; border-radius: 12px; padding: 14px; font-weight: 700; font-size: 15px; cursor: pointer; color: #333; margin-bottom: 10px; display: block; text-align: center; }
-  .btn-danger { width: 100%; background: none; border: 1.5px solid #e53935; border-radius: 12px; padding: 12px; font-weight: 600; font-size: 14px; cursor: pointer; color: #e53935; }
+  .btn-primary { width: 100%; border: none; border-radius: 14px; padding: 15px; font-weight: 700; font-size: 16px; cursor: pointer; color: #fff; margin-bottom: 10px; }
+  .btn-secondary { width: 100%; background: #F0F0F0; border: none; border-radius: 12px; padding: 13px; font-weight: 700; font-size: 15px; cursor: pointer; color: #333; margin-bottom: 10px; display: block; text-align: center; }
+  .btn-danger { width: 100%; background: none; border: 1.5px solid #e53935; border-radius: 12px; padding: 11px; font-weight: 600; font-size: 14px; cursor: pointer; color: #e53935; }
   .btn-danger-confirm { background: #e53935; color: #fff; border: none; border-radius: 10px; padding: 10px; font-weight: 600; font-size: 14px; cursor: pointer; flex: 1; }
   .btn-cancel { background: #F0F0F0; border: none; border-radius: 10px; padding: 10px; font-weight: 600; font-size: 14px; cursor: pointer; flex: 1; }
 
-  .info-box { background: #F8F8F8; border-radius: 12px; padding: 14px; margin-bottom: 14px; font-size: 13px; color: #555; line-height: 1.6; }
-  .warn-box { background: #FFF8E7; border-radius: 12px; padding: 14px; margin-bottom: 14px; font-size: 13px; color: #7A5C00; line-height: 1.6; }
-  .confirm-box { background: #FFF0F0; border-radius: 12px; padding: 14px; }
+  .info-box { background: #F8F8F8; border-radius: 12px; padding: 13px; margin-bottom: 13px; font-size: 13px; color: #555; line-height: 1.6; }
+  .warn-box { background: #FFF8E7; border-radius: 12px; padding: 13px; margin-bottom: 13px; font-size: 13px; color: #7A5C00; line-height: 1.6; }
+  .confirm-box { background: #FFF0F0; border-radius: 12px; padding: 13px; }
   .confirm-box p { font-size: 14px; font-weight: 600; color: #c62828; margin-bottom: 10px; }
   .confirm-row { display: flex; gap: 8px; }
-
-  .nap-or { text-align: center; font-size: 13px; color: #AAA; margin: 4px 0 12px; }
-
-  .setup-step { display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-start; }
-  .step-num { background: #6B9FD4; color: #fff; border-radius: 50%; width: 26px; height: 26px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-  .step-text { font-size: 13px; color: #444; line-height: 1.6; flex: 1; }
-  .step-text strong { color: #111; display: block; margin-bottom: 2px; }
-  .step-text code { background: #F0F0F0; border-radius: 4px; padding: 1px 5px; font-size: 12px; font-family: monospace; }
 
   .code-block { background: #1A1E2E; border-radius: 10px; padding: 14px; margin: 10px 0; position: relative; }
   .code-block pre { color: #E2E8F0; font-size: 11px; line-height: 1.7; white-space: pre-wrap; font-family: monospace; margin: 0; }
@@ -121,40 +112,56 @@
   .deploy-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #F3F3F3; font-size: 13px; }
   .deploy-row:last-child { border-bottom: none; }
   .deploy-label { color: #666; }
-  .deploy-val { font-weight: 600; color: #1A1A1A; background: #EBF3FB; border-radius: 6px; padding: 3px 10px; font-size: 12px; color: #4A7FB5; }
+  .deploy-val { font-weight: 600; background: #EBF3FB; border-radius: 6px; padding: 3px 10px; font-size: 12px; color: #4A7FB5; }
 
-  .toast { position: fixed; top: calc(16px + var(--safe-top)); left: 50%; transform: translateX(-50%); color: #fff; padding: 10px 20px; border-radius: 24px; font-weight: 600; font-size: 14px; z-index: 999; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+  .toast { position: fixed; top: calc(14px + var(--safe-top)); left: 50%; transform: translateX(-50%); color: #fff; padding: 10px 20px; border-radius: 24px; font-weight: 600; font-size: 14px; z-index: 999; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
 
-  .content { padding: 16px 16px 0; }
+  .setup-step { display: flex; gap: 12px; margin-bottom: 14px; }
+  .step-num { background: #6B9FD4; color: #fff; border-radius: 50%; width: 26px; height: 26px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-text { font-size: 13px; color: #444; line-height: 1.6; flex: 1; }
+  .step-text strong { color: #111; display: block; margin-bottom: 2px; }
+
+  /* datetime-local input fix */
+  input[type="datetime-local"] { font-size: 14px; }
+
+  .content { padding: 14px 14px 0; }
   .spacer { height: 40px; }
-  .divider { height: 1px; background: #F0F0F0; margin: 16px 0; }
+  .divider { height: 1px; background: #F0F0F0; margin: 14px 0; }
+  .seg-row { display: flex; background: #F0F0F0; border-radius: 10px; padding: 3px; margin-bottom: 14px; }
+  .seg-btn { flex: 1; border: none; border-radius: 8px; padding: 8px; font-size: 13px; font-weight: 600; cursor: pointer; background: transparent; color: #666; transition: all 0.15s; }
+  .seg-btn.active { background: #fff; color: #1A1A1A; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
 </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
+// ── CONFIG ──
 let SCRIPT_URL = localStorage.getItem('bt-script-url') || '';
 let WHO = localStorage.getItem('bt-who') || '';
 
+// ── STATE ──
 let logs = [];
 let modal = null;
 let feedType = 'Breast L';
 let feedDuration = '', feedAmount = '', noteVal = '';
 let napDuration = '', napLocation = '';
-let napMode = 'timer'; // 'timer' | 'manual'
+let napMode = 'timer';
+let feedMode = 'timer'; // 'timer' | 'manual'
 let confirmClear = false;
 let syncStatus = 'idle';
 let lastSync = null;
 let toastTimer = null;
 let tempUrl = '';
+let backdateVal = ''; // ISO local string for backdate
 
-// Active nap timer state
-let activeNap = null; // { startTime: ISO string }
-let napTickInterval = null;
+// Active timers — stored in localStorage so both users see them via sync
+// { startTime, pausedAt, elapsed, paused, who }
+let activeNap = null;
+let activeFeed = null;
+let tickInterval = null;
 
 const FEED_TYPES = ['Breast L','Breast R','Both','Formula','Expressed'];
 const NAP_LOCATIONS = ['Cot','Pram','Arms','Car','Carrier'];
-
 const TYPES = {
   feed: { label:'Feed', emoji:'🍼', color:'#6B9FD4', light:'#EBF3FB' },
   wee:  { label:'Wee',  emoji:'💛', color:'#F0C040', light:'#FEF9E7' },
@@ -162,6 +169,7 @@ const TYPES = {
   nap:  { label:'Nap',  emoji:'😴', color:'#9B8EC4', light:'#F0EDF8' },
 };
 
+// ── HELPERS ──
 function fmt(iso) {
   return new Date(iso).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',hour12:true});
 }
@@ -174,25 +182,13 @@ function fmtDate(iso) {
 }
 function timeSince(iso) {
   const m=Math.floor((Date.now()-new Date(iso))/60000);
-  if(m<1) return 'just now';
-  if(m<60) return m+'m ago';
+  if(m<1) return 'just now'; if(m<60) return m+'m ago';
   return Math.floor(m/60)+'h '+(m%60)+'m ago';
 }
-function fmtDuration(mins) {
-  if (!mins) return '';
-  if (mins < 60) return mins + 'm';
-  return Math.floor(mins/60) + 'h ' + (mins%60 > 0 ? (mins%60)+'m' : '');
-}
-function elapsedMins(startIso) {
-  return Math.floor((Date.now() - new Date(startIso)) / 60000);
-}
-function elapsedDisplay(startIso) {
-  const total = Math.floor((Date.now() - new Date(startIso)) / 1000);
-  const h = Math.floor(total/3600);
-  const m = Math.floor((total%3600)/60);
-  const s = total%60;
-  if (h>0) return h+'h '+String(m).padStart(2,'0')+'m';
-  return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+function fmtDur(mins) {
+  mins=parseInt(mins)||0;
+  if(mins<60) return mins+'m';
+  return Math.floor(mins/60)+'h'+(mins%60>0?' '+(mins%60)+'m':'');
 }
 function groupByDate(arr) {
   const g={};
@@ -207,154 +203,232 @@ function uid() { return Date.now().toString(36)+Math.random().toString(36).slice
 function totalNapMins(dayLogs) {
   return dayLogs.filter(l=>l.type==='nap').reduce((s,l)=>s+(parseInt(l.duration)||0),0);
 }
-
-function showToast(msg, color='#4CAF50') {
-  const old=document.getElementById('toast');
-  if(old) old.remove();
-  if(toastTimer) clearTimeout(toastTimer);
-  const t=document.createElement('div');
-  t.id='toast';t.className='toast';t.style.background=color;t.textContent=msg;
-  document.body.appendChild(t);
+function localDatetimeValue(d) {
+  // Returns value suitable for datetime-local input
+  const dt = d || new Date();
+  const pad = n => String(n).padStart(2,'0');
+  return `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+}
+function showToast(msg,color='#4CAF50') {
+  const old=document.getElementById('toast');if(old)old.remove();
+  if(toastTimer)clearTimeout(toastTimer);
+  const t=document.createElement('div');t.id='toast';t.className='toast';
+  t.style.background=color;t.textContent=msg;document.body.appendChild(t);
   toastTimer=setTimeout(()=>t.remove(),2800);
 }
 
-// ── Nap timer ──
-function startNapTimer() {
-  activeNap = { startTime: new Date().toISOString() };
-  localStorage.setItem('bt-active-nap', JSON.stringify(activeNap));
-  modal = null;
-  if (napTickInterval) clearInterval(napTickInterval);
-  napTickInterval = setInterval(renderNapBar, 1000);
-  render();
-  showToast('😴 Nap started!', '#9B8EC4');
+// ── TIMER LOGIC ──
+// elapsed = total ms accumulated (excluding current running segment)
+// startTime = when current segment started (null if paused)
+function timerElapsedMs(timer) {
+  if (!timer) return 0;
+  let ms = timer.elapsed || 0;
+  if (!timer.paused && timer.startTime) ms += Date.now() - new Date(timer.startTime).getTime();
+  return ms;
+}
+function timerDisplay(timer) {
+  const ms = timerElapsedMs(timer);
+  const s = Math.floor(ms/1000);
+  const h = Math.floor(s/3600);
+  const m = Math.floor((s%3600)/60);
+  const sec = s%60;
+  if(h>0) return h+'h '+String(m).padStart(2,'0')+'m';
+  return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+}
+function timerMins(timer) { return Math.round(timerElapsedMs(timer)/60000); }
+
+function saveTimers() {
+  localStorage.setItem('bt-active-nap', activeNap ? JSON.stringify(activeNap) : '');
+  localStorage.setItem('bt-active-feed', activeFeed ? JSON.stringify(activeFeed) : '');
+  // Push timer state to sheet so other person sees it
+  if (SCRIPT_URL) {
+    const state = { activeNap, activeFeed };
+    fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'timer', state }) }).catch(()=>{});
+  }
 }
 
-function stopNapTimer() {
-  if (!activeNap) return;
-  const mins = elapsedMins(activeNap.startTime);
+function startTimer(type) {
+  const timer = { startTime: new Date().toISOString(), elapsed: 0, paused: false, who: WHO||'', feedType: type==='feed'?feedType:null };
+  if (type==='nap') activeNap = timer;
+  else activeFeed = timer;
+  saveTimers();
+  startTick();
+}
+function pauseTimer(type) {
+  const t = type==='nap'?activeNap:activeFeed;
+  if (!t||t.paused) return;
+  t.elapsed = timerElapsedMs(t);
+  t.startTime = null;
+  t.paused = true;
+  saveTimers(); render();
+}
+function resumeTimer(type) {
+  const t = type==='nap'?activeNap:activeFeed;
+  if (!t||!t.paused) return;
+  t.startTime = new Date().toISOString();
+  t.paused = false;
+  saveTimers(); startTick(); render();
+}
+function stopTimer(type) {
+  const t = type==='nap'?activeNap:activeFeed;
+  if (!t) return;
+  const mins = Math.max(1, timerMins(t));
   const entry = {
-    id: uid(), type: 'nap',
-    timestamp: activeNap.startTime,
-    duration: mins > 0 ? String(mins) : '1',
-    napLocation: null, who: WHO||null, note: null,
+    id: uid(), type,
+    timestamp: t.originalStart || t.startTime || new Date().toISOString(),
+    duration: String(mins),
+    who: t.who||WHO||null,
+    note: null,
+    ...(type==='feed' && { feedType: t.feedType||feedType }),
+    ...(type==='nap' && { napLocation: null }),
   };
-  activeNap = null;
-  localStorage.removeItem('bt-active-nap');
-  if (napTickInterval) { clearInterval(napTickInterval); napTickInterval=null; }
+  // set originalStart to track when timer first began
+  entry.timestamp = t.originalStart || t.startTime;
+  if (type==='nap') activeNap=null; else activeFeed=null;
+  saveTimers();
   logs.push(entry);
-  modal = null;
-  render();
-  showToast('😴 Nap saved — ' + fmtDuration(parseInt(entry.duration)), '#9B8EC4');
+  modal=null; render();
+  showToast(TYPES[type].emoji+' '+TYPES[type].label+' saved — '+fmtDur(mins), TYPES[type].color);
   syncWithSheet(entry);
 }
 
-function renderNapBar() {
-  const bar = document.getElementById('nap-timer-display');
-  if (bar && activeNap) bar.textContent = elapsedDisplay(activeNap.startTime);
+function startTick() {
+  if (tickInterval) return;
+  tickInterval = setInterval(tickTimers, 1000);
+}
+function tickTimers() {
+  // Update displays without full re-render
+  const nd = document.getElementById('nap-timer-disp');
+  const fd = document.getElementById('feed-timer-disp');
+  if (nd && activeNap && !activeNap.paused) nd.textContent = timerDisplay(activeNap);
+  if (fd && activeFeed && !activeFeed.paused) fd.textContent = timerDisplay(activeFeed);
+  if (!activeNap && !activeFeed) { clearInterval(tickInterval); tickInterval=null; }
 }
 
-// ── Sync ──
+// ── SYNC ──
 async function syncWithSheet(newEntry=null) {
   if(!SCRIPT_URL){syncStatus='no-url';render();return;}
-  syncStatus='syncing';render();
+  syncStatus='syncing'; renderSyncBar();
   try {
-    const res=await fetch(SCRIPT_URL+'?action=get');
-    const data=await res.json();
-    const remote=Array.isArray(data.logs)?data.logs:[];
-    const ids=new Set(logs.map(l=>l.id));
-    remote.forEach(r=>{if(!ids.has(r.id)) logs.push(r);});
+    const res = await fetch(SCRIPT_URL+'?action=get');
+    const data = await res.json();
+    const remote = Array.isArray(data.logs)?data.logs:[];
+    const ids = new Set(logs.map(l=>l.id));
+    remote.forEach(r=>{ if(!ids.has(r.id)) logs.push(r); });
     logs.sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
-    if(newEntry){
+
+    // Sync active timers from sheet
+    if (data.timerState) {
+      const ts = data.timerState;
+      if (ts.activeNap && !activeNap) { activeNap=ts.activeNap; startTick(); }
+      if (ts.activeFeed && !activeFeed) { activeFeed=ts.activeFeed; startTick(); }
+    }
+
+    if (newEntry) {
       await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'add',entry:newEntry})});
     }
-    lastSync=new Date();syncStatus='ok';
-  } catch(e){syncStatus='error';}
+    lastSync=new Date(); syncStatus='ok';
+  } catch(e) { syncStatus='error'; }
   render();
 }
-async function deleteFromSheet(id){
+async function deleteFromSheet(id) {
   if(!SCRIPT_URL)return;
   try{await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'delete',id})});}catch(e){}
 }
+function renderSyncBar() {
+  const bar=document.getElementById('sync-bar');
+  if(!bar)return;
+  const dotColor=syncStatus==='ok'?'#4CAF50':syncStatus==='error'?'#e53935':syncStatus==='syncing'?'#F0C040':'#CCC';
+  const label=syncStatus==='ok'?(lastSync?'Synced '+timeSince(lastSync.toISOString()):'Synced'):
+    syncStatus==='syncing'?'Syncing…':syncStatus==='error'?'Sync failed':'Not connected';
+  bar.querySelector('.sync-dot').style.background=dotColor;
+  bar.querySelector('.sync-label').textContent=label;
+}
 
-// ── Actions ──
+// ── ACTIONS ──
 function openModal(type) {
-  modal=type;feedType='Breast L';feedDuration='';feedAmount='';noteVal='';
-  napDuration='';napLocation='';napMode='timer';confirmClear=false;
+  modal=type; feedType='Breast L'; feedDuration=''; feedAmount=''; noteVal='';
+  napDuration=''; napLocation=''; napMode='timer'; feedMode='timer';
+  confirmClear=false; backdateVal='';
   render();
 }
 function closeModal(){modal=null;confirmClear=false;render();}
 function setFeedType(ft){feedType=ft;render();}
-function setNapLocation(l){napLocation=l;render();}
+function setNapLoc(l){napLocation=l;render();}
 function setNapMode(m){napMode=m;render();}
+function setFeedMode(m){feedMode=m;render();}
 
-function readInputs(){
-  ['inp-dur','inp-amt','inp-note','inp-url','inp-who','inp-nap-dur','inp-nap-loc'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el) return;
-    if(id==='inp-dur') feedDuration=el.value;
-    if(id==='inp-amt') feedAmount=el.value;
-    if(id==='inp-note') noteVal=el.value;
-    if(id==='inp-url') tempUrl=el.value.trim();
-    if(id==='inp-who') WHO=el.value.trim();
-    if(id==='inp-nap-dur') napDuration=el.value;
-  });
+function readInputs() {
+  const get = id => { const el=document.getElementById(id); return el?el.value:''; };
+  feedDuration = get('inp-dur')||feedDuration;
+  feedAmount   = get('inp-amt')||feedAmount;
+  noteVal      = get('inp-note')||noteVal;
+  tempUrl      = get('inp-url')||tempUrl;
+  WHO          = get('inp-who')||WHO;
+  napDuration  = get('inp-nap-dur')||napDuration;
+  backdateVal  = get('inp-backdate')||backdateVal;
 }
 
 async function logEntry() {
   readInputs();
+  const isNap   = modal==='nap';
+  const isFeed  = modal==='feed';
+  const useTimer = (isNap && napMode==='timer') || (isFeed && feedMode==='timer');
+
+  if (useTimer) {
+    if (isNap && activeNap)  { showToast('A nap is already running','#e53935'); return; }
+    if (isFeed && activeFeed){ showToast('A feed is already running','#e53935'); return; }
+    // store original start for later
+    const timer = { startTime: new Date().toISOString(), elapsed:0, paused:false, who:WHO||'', feedType: isFeed?feedType:null };
+    timer.originalStart = timer.startTime;
+    if (isNap) activeNap=timer; else activeFeed=timer;
+    saveTimers(); startTick(); modal=null; render();
+    showToast(TYPES[modal||( isNap?'nap':'feed')].emoji+' Timer started!', isNap?'#9B8EC4':'#6B9FD4');
+    return;
+  }
+
+  // Use backdateVal if set, else now
+  const timestamp = backdateVal ? new Date(backdateVal).toISOString() : new Date().toISOString();
+
   let entry;
-  if (modal==='nap') {
-    if (napMode==='timer') { startNapTimer(); return; }
-    entry = {
-      id:uid(), type:'nap',
-      timestamp: new Date().toISOString(),
-      duration: napDuration||null,
-      napLocation: napLocation||null,
-      who: WHO||null, note: noteVal||null,
-    };
+  if (isNap) {
+    entry = { id:uid(), type:'nap', timestamp, duration:napDuration||null, napLocation:napLocation||null, who:WHO||null, note:noteVal||null };
+  } else if (isFeed) {
+    entry = { id:uid(), type:'feed', timestamp, feedType, duration:feedDuration||null, amount:feedAmount||null, who:WHO||null, note:noteVal||null };
   } else {
-    entry = {
-      id:uid(), type:modal,
-      timestamp:new Date().toISOString(),
-      who:WHO||null,
-      ...(modal==='feed'&&{feedType,duration:feedDuration||null,amount:feedAmount||null}),
-      note:noteVal||null,
-    };
+    entry = { id:uid(), type:modal, timestamp, who:WHO||null, note:noteVal||null };
   }
   logs.push(entry);
-  const t=TYPES[modal];
-  modal=null; render();
+  const t=TYPES[modal]; modal=null; render();
   showToast(t.emoji+' '+t.label+' logged!', t.color);
   await syncWithSheet(entry);
 }
 
-async function removeEntry(id){
-  logs=logs.filter(l=>l.id!==id);
-  render();
-  await deleteFromSheet(id);
-  await syncWithSheet();
+async function removeEntry(id) {
+  logs=logs.filter(l=>l.id!==id); render();
+  await deleteFromSheet(id); await syncWithSheet();
 }
 function clearAll(){logs=[];confirmClear=false;modal=null;render();showToast('🗑️ Data cleared');}
 function saveUrl(){
   readInputs();
   if(!tempUrl){showToast('Please paste a URL first','#e53935');return;}
-  SCRIPT_URL=tempUrl;localStorage.setItem('bt-script-url',SCRIPT_URL);
+  SCRIPT_URL=tempUrl; localStorage.setItem('bt-script-url',SCRIPT_URL);
   if(WHO) localStorage.setItem('bt-who',WHO);
-  modal=null;showToast('✅ Connected!');syncWithSheet();
+  modal=null; showToast('✅ Connected!'); syncWithSheet();
 }
-function saveWho(){readInputs();if(WHO) localStorage.setItem('bt-who',WHO);modal=null;render();}
+function saveWho(){readInputs();if(WHO)localStorage.setItem('bt-who',WHO);modal=null;render();}
 
-// ── Render ──
+// ── RENDER ──
 function render() {
   const todayStr=new Date().toDateString();
   const todayLogs=logs.filter(l=>new Date(l.timestamp).toDateString()===todayStr);
   const counts={feed:0,wee:0,poo:0,nap:0};
   todayLogs.forEach(l=>counts[l.type]=(counts[l.type]||0)+1);
-  const totalNap = totalNapMins(todayLogs);
+  const totalNap=totalNapMins(todayLogs);
   const lastFeed=[...logs].reverse().find(l=>l.type==='feed');
+  const lastNap=[...logs].reverse().find(l=>l.type==='nap');
   const grouped=groupByDate(logs);
   const isSetup=!SCRIPT_URL;
-
   const dotColor=syncStatus==='ok'?'#4CAF50':syncStatus==='error'?'#e53935':syncStatus==='syncing'?'#F0C040':'#CCC';
   const syncLabel=syncStatus==='ok'?(lastSync?'Synced '+timeSince(lastSync.toISOString()):'Synced'):
     syncStatus==='syncing'?'Syncing…':syncStatus==='error'?'Sync failed':'Not connected';
@@ -363,92 +437,100 @@ function render() {
   <div class="header">
     <div class="header-inner">
       <div class="header-left">
-        <span style="font-size:26px">👶</span>
+        <span style="font-size:24px">👶</span>
         <div>
           <div class="header-title">Baby Tracker</div>
-          <div class="header-sub">${lastFeed?'Last feed: '+timeSince(lastFeed.timestamp)+' · '+lastFeed.feedType:'No feeds logged yet'}</div>
+          <div class="header-sub">${lastFeed?'Last feed: '+timeSince(lastFeed.timestamp)+' · '+lastFeed.feedType:'No feeds yet'}</div>
         </div>
       </div>
       <button class="menu-btn" onclick="openModal('menu')">⋯</button>
     </div>
   </div>
-  <div class="sync-bar" style="background:${syncStatus==='error'?'#FFF0F0':syncStatus==='no-url'?'#FFF8E7':'#fff'}">
-    <div class="sync-left"><span class="sync-dot" style="background:${dotColor}"></span><span style="font-size:12px;color:#666">${syncLabel}</span></div>
+  <div id="sync-bar" class="sync-bar" style="background:${syncStatus==='error'?'#FFF0F0':syncStatus==='no-url'?'#FFF8E7':'#fff'}">
+    <div class="sync-left"><span class="sync-dot" style="background:${dotColor}"></span><span class="sync-label" style="font-size:12px;color:#666">${syncLabel}</span></div>
     ${isSetup
       ?`<button class="sync-btn" style="background:#6B9FD4" onclick="openModal('setup')">Set up sync →</button>`
       :`<button class="sync-btn" style="background:#6B9FD4" onclick="syncWithSheet()">↻ Refresh</button>`
     }
   </div>`;
 
-  // Active nap banner
+  // Active feed timer bar
+  if (activeFeed) {
+    const paused = activeFeed.paused;
+    h+=`<div class="timer-bar" style="background:#EBF3FB;border-bottom:1px solid #C5DDEF">
+      <div class="timer-bar-left" style="color:#3A6A9A">
+        🍼 Feeding${activeFeed.feedType?' · '+activeFeed.feedType:''} ${activeFeed.who?'('+activeFeed.who+')':''}
+        <span class="timer-display" id="feed-timer-disp" style="color:var(--feed)">${timerDisplay(activeFeed)}</span>
+      </div>
+      <div class="timer-controls">
+        ${paused
+          ?`<button class="tctl" style="background:#4CAF50" onclick="resumeTimer('feed')">▶ Resume</button>`
+          :`<button class="tctl" style="background:#F0A030" onclick="pauseTimer('feed')">⏸ Pause</button>`
+        }
+        <button class="tctl" style="background:var(--feed)" onclick="stopTimer('feed')">■ Stop</button>
+      </div>
+    </div>`;
+  }
+
+  // Active nap timer bar
   if (activeNap) {
-    h+=`<div class="nap-active-bar">
-      <div class="nap-active-left">😴 Napping · <span class="nap-timer" id="nap-timer-display">${elapsedDisplay(activeNap.startTime)}</span></div>
-      <button class="nap-stop-btn" onclick="stopNapTimer()">Stop & Save</button>
+    const paused = activeNap.paused;
+    h+=`<div class="timer-bar" style="background:var(--nap-light);border-bottom:1px solid #D4CCE8">
+      <div class="timer-bar-left" style="color:#5A4A8A">
+        😴 Napping ${activeNap.who?'('+activeNap.who+')':''}
+        <span class="timer-display" id="nap-timer-disp" style="color:var(--nap)">${timerDisplay(activeNap)}</span>
+      </div>
+      <div class="timer-controls">
+        ${paused
+          ?`<button class="tctl" style="background:#4CAF50" onclick="resumeTimer('nap')">▶ Resume</button>`
+          :`<button class="tctl" style="background:#F0A030" onclick="pauseTimer('nap')">⏸ Pause</button>`
+        }
+        <button class="tctl" style="background:var(--nap)" onclick="stopTimer('nap')">■ Stop</button>
+      </div>
     </div>`;
   }
 
   h+=`<div class="content">
   <div class="section-label" style="margin-top:4px">Today</div>
-  <div class="today-grid">
-    <div class="today-card" style="background:var(--feed-light)">
-      <div class="today-emoji">🍼</div>
-      <div class="today-count" style="color:var(--feed)">${counts.feed}</div>
-      <div class="today-label">Feeds</div>
-    </div>
-    <div class="today-card" style="background:var(--wee-light)">
-      <div class="today-emoji">💛</div>
-      <div class="today-count" style="color:var(--wee)">${counts.wee}</div>
-      <div class="today-label">Wees</div>
-    </div>
-    <div class="today-nap" style="background:var(--nap-light)">
-      <span style="font-size:28px">😴</span>
-      <div class="today-nap-right">
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <div class="today-nap-count" style="color:var(--nap)">${counts.nap}</div>
-          <div class="today-nap-label">Naps</div>
-        </div>
-        <div class="today-nap-total" style="color:var(--nap)">${totalNap>0?fmtDuration(totalNap)+' total':'No naps yet'}</div>
-      </div>
-    </div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-    <div class="today-card" style="background:var(--poo-light)">
-      <div class="today-emoji">💩</div>
-      <div class="today-count" style="color:var(--poo)">${counts.poo}</div>
-      <div class="today-label">Poos</div>
-    </div>
-    <div style="background:#F8F8F8;border-radius:14px;padding:14px 10px;text-align:center">
-      <div style="font-size:13px;color:#AAA;margin-top:4px">Last nap</div>
-      <div style="font-size:13px;font-weight:600;color:#888;margin-top:4px">${(()=>{const ln=[...logs].reverse().find(l=>l.type==='nap');return ln?timeSince(ln.timestamp):'—';})()}</div>
-    </div>
-  </div>
-
-  <div class="log-grid">
-    ${Object.entries(TYPES).map(([type,cfg])=>`
-      <button class="log-btn" style="background:${cfg.color}" onclick="openModal('${type}')">
-        <span style="font-size:20px">${cfg.emoji}</span>${cfg.label}
-      </button>`).join('')}
-  </div>`;
+  <div class="today-grid">`;
+  Object.entries(TYPES).forEach(([type,cfg])=>{
+    const extra = type==='nap' ? `<div class="today-sub" style="color:${cfg.color}">${totalNap>0?fmtDur(totalNap):'—'}</div>` :
+                  type==='feed'? `<div class="today-sub" style="color:${cfg.color}">${lastFeed?timeSince(lastFeed.timestamp):'—'}</div>` : '';
+    h+=`<div class="today-card" style="background:${cfg.light}">
+      <div class="today-emoji">${cfg.emoji}</div>
+      <div class="today-count" style="color:${cfg.color}">${counts[type]}</div>
+      <div class="today-label">${cfg.label}s</div>
+      ${extra}
+    </div>`;
+  });
+  h+=`</div>
+  <div class="log-grid">`;
+  Object.entries(TYPES).forEach(([type,cfg])=>{
+    const isActive = (type==='nap'&&activeNap)||(type==='feed'&&activeFeed);
+    h+=`<button class="log-btn" style="background:${cfg.color};${isActive?'opacity:0.6':''}" onclick="openModal('${type}')">
+      <span style="font-size:18px">${cfg.emoji}</span>${isActive?'Running…':cfg.label}
+    </button>`;
+  });
+  h+=`</div>`;
 
   // History
   if(Object.keys(grouped).length===0){
-    h+=`<div class="empty"><div class="empty-icon">👶</div><div class="empty-title">No entries yet</div><div class="empty-sub">${isSetup?'Set up sync then start logging':'Tap a button above to get started'}</div></div>`;
+    h+=`<div class="empty"><div class="empty-icon">👶</div><div class="empty-title">No entries yet</div><div class="empty-sub">Tap a button above to get started</div></div>`;
   } else {
     Object.entries(grouped).forEach(([,entries])=>{
       const dayNap=totalNapMins(entries);
-      h+=`<div class="date-group"><div class="date-label">${fmtDate(entries[0].timestamp)}${dayNap>0?' · 😴 '+fmtDuration(dayNap)+' sleep':''}</div><div class="entry-list">`;
+      h+=`<div class="date-group"><div class="date-label">${fmtDate(entries[0].timestamp)}${dayNap>0?' · 😴 '+fmtDur(dayNap):''}</div><div class="entry-list">`;
       entries.forEach(e=>{
         const cfg=TYPES[e.type];
         let detail='';
         if(e.type==='feed'){
           if(e.feedType) detail+=' · '+e.feedType;
-          if(e.duration) detail+=' · '+e.duration+' min';
-          if(e.amount) detail+=' · '+e.amount+' mL';
+          if(e.duration) detail+=' · '+fmtDur(parseInt(e.duration));
+          if(e.amount)   detail+=' · '+e.amount+' mL';
         }
         if(e.type==='nap'){
-          if(e.duration) detail+=' · '+fmtDuration(parseInt(e.duration));
-          if(e.napLocation) detail+=' · '+e.napLocation;
+          if(e.duration)     detail+=' · '+fmtDur(parseInt(e.duration));
+          if(e.napLocation)  detail+=' · '+e.napLocation;
         }
         h+=`<div class="entry-row">
           <div class="entry-icon" style="background:${cfg.light}">${cfg.emoji}</div>
@@ -469,24 +551,52 @@ function render() {
   h+=`<div class="spacer"></div></div>`;
 
   // ── Feed modal ──
-  if(modal==='feed'||modal==='wee'||modal==='poo'){
+  if(modal==='feed'){
+    const cfg=TYPES.feed;
+    h+=`<div class="overlay" onclick="closeModal()"><div class="sheet" onclick="event.stopPropagation()">
+      <div class="sheet-header">
+        <div class="sheet-title"><span>🍼</span>Log Feed</div>
+        <button class="close-btn" onclick="closeModal()">×</button>
+      </div>
+      ${activeFeed?'<div class="warn-box">⏱ A feed timer is already running — stop it from the bar above first.</div>':''}
+      <div class="seg-row">
+        <button class="seg-btn${feedMode==='timer'?' active':''}" onclick="setFeedMode('timer')">⏱ Timer</button>
+        <button class="seg-btn${feedMode==='manual'?' active':''}" onclick="setFeedMode('manual')">✏️ Manual</button>
+      </div>
+      <div class="field"><label>Feed type</label><div class="pill-row">
+        ${FEED_TYPES.map(ft=>`<button class="pill${feedType===ft?' af':''}" onclick="setFeedType('${ft}')">${ft}</button>`).join('')}
+      </div></div>
+      ${feedMode==='timer'&&!activeFeed?`
+        <div class="info-box">Tap <strong>Start Feed</strong> to begin timing. Pause and resume as needed — tap <strong>■ Stop</strong> in the bar at the top when done.</div>
+        <button class="btn-primary" style="background:var(--feed)" onclick="logEntry()">🍼 Start Feed Timer</button>`
+      :feedMode==='timer'&&activeFeed?''
+      :`
+        <div class="two-col">
+          <div class="field"><label>Duration (min)</label><input type="number" id="inp-dur" placeholder="e.g. 15" value="${feedDuration}"></div>
+          ${feedType==='Formula'||feedType==='Expressed'?'<div class="field"><label>Amount (mL)</label><input type="number" id="inp-amt" placeholder="e.g. 90" value="'+feedAmount+'"></div>':''}
+        </div>
+        <div class="field"><label>Date &amp; time ${backdateVal?'<span style="color:#e53935">· backdated</span>':''}</label>
+          <input type="datetime-local" id="inp-backdate" value="${backdateVal||localDatetimeValue()}">
+        </div>
+        <div class="field"><label>Note (optional)</label><input type="text" id="inp-note" placeholder="Any notes…" value="${noteVal}"></div>
+        <button class="btn-primary" style="background:var(--feed)" onclick="logEntry()">Save Feed</button>`
+      }
+    </div></div>`;
+  }
+
+  // ── Wee / Poo modal ──
+  if(modal==='wee'||modal==='poo'){
     const cfg=TYPES[modal];
     h+=`<div class="overlay" onclick="closeModal()"><div class="sheet" onclick="event.stopPropagation()">
       <div class="sheet-header">
         <div class="sheet-title"><span>${cfg.emoji}</span>Log ${cfg.label}</div>
         <button class="close-btn" onclick="closeModal()">×</button>
       </div>
-      ${!WHO?'<div class="warn-box">💡 Set your name in ⋯ so entries show who logged what.</div>':''}
-      ${modal==='feed'?`
-        <div class="field"><label>Feed type</label><div class="pill-row">
-          ${FEED_TYPES.map(ft=>`<button class="pill${feedType===ft?' active-feed':''}" onclick="setFeedType('${ft}')">${ft}</button>`).join('')}
-        </div></div>
-        <div class="two-col">
-          <div class="field"><label>Duration (min)</label><input type="number" id="inp-dur" placeholder="e.g. 15" value="${feedDuration}" oninput="feedDuration=this.value"></div>
-          ${feedType==='Formula'||feedType==='Expressed'?'<div class="field"><label>Amount (mL)</label><input type="number" id="inp-amt" placeholder="e.g. 90" value="'+feedAmount+'" oninput="feedAmount=this.value"></div>':''}
-        </div>`:''}
-      <div class="field"><label>Note (optional)</label><input type="text" id="inp-note" placeholder="Any notes…" value="${noteVal}" oninput="noteVal=this.value"></div>
-      <button class="btn-primary" style="background:${cfg.color}" onclick="logEntry()">Save Entry</button>
+      <div class="field"><label>Date &amp; time ${backdateVal?'<span style="color:#e53935">· backdated</span>':''}</label>
+        <input type="datetime-local" id="inp-backdate" value="${backdateVal||localDatetimeValue()}">
+      </div>
+      <div class="field"><label>Note (optional)</label><input type="text" id="inp-note" placeholder="Any notes…" value="${noteVal}"></div>
+      <button class="btn-primary" style="background:${cfg.color}" onclick="logEntry()">Save ${cfg.label}</button>
     </div></div>`;
   }
 
@@ -497,22 +607,24 @@ function render() {
         <div class="sheet-title"><span>😴</span>Log Nap</div>
         <button class="close-btn" onclick="closeModal()">×</button>
       </div>
-      ${activeNap?'<div class="warn-box">⏱ A nap is already running. Stop it first.</div>':''}
-      <div class="pill-row" style="margin-bottom:16px">
-        <button class="pill${napMode==='timer'?' active-nap':''}" onclick="setNapMode('timer')">⏱ Start timer</button>
-        <button class="pill${napMode==='manual'?' active-nap':''}" onclick="setNapMode('manual')">✏️ Enter manually</button>
+      ${activeNap?'<div class="warn-box">⏱ A nap timer is already running — stop it from the bar above first.</div>':''}
+      <div class="seg-row">
+        <button class="seg-btn${napMode==='timer'?' active':''}" onclick="setNapMode('timer')">⏱ Timer</button>
+        <button class="seg-btn${napMode==='manual'?' active':''}" onclick="setNapMode('manual')">✏️ Manual</button>
       </div>
       ${napMode==='timer'&&!activeNap?`
-        <div class="info-box">Tap <strong>Start Nap</strong> and the timer runs in the background. Tap <strong>Stop & Save</strong> when baby wakes up.</div>
-        <button class="btn-primary" style="background:var(--nap)" onclick="logEntry()">😴 Start Nap</button>`
-      :napMode==='timer'&&activeNap?`
-        <div class="info-box">Nap already running — use the banner at the top to stop it.</div>`
+        <div class="info-box">Tap <strong>Start Nap</strong> to begin timing. Pause if baby stirs — the timer keeps the total. Tap <strong>■ Stop</strong> in the bar at top when baby wakes.</div>
+        <button class="btn-primary" style="background:var(--nap)" onclick="logEntry()">😴 Start Nap Timer</button>`
+      :napMode==='timer'&&activeNap?''
       :`
-        <div class="field"><label>Duration (minutes)</label><input type="number" id="inp-nap-dur" placeholder="e.g. 45" value="${napDuration}" oninput="napDuration=this.value"></div>
+        <div class="field"><label>Duration (minutes)</label><input type="number" id="inp-nap-dur" placeholder="e.g. 45" value="${napDuration}"></div>
         <div class="field"><label>Where did they sleep? (optional)</label><div class="pill-row">
-          ${NAP_LOCATIONS.map(l=>`<button class="pill${napLocation===l?' active-nap':''}" onclick="setNapLocation('${l}')">${l}</button>`).join('')}
+          ${NAP_LOCATIONS.map(l=>`<button class="pill${napLocation===l?' an':''}" onclick="setNapLoc('${l}')">${l}</button>`).join('')}
         </div></div>
-        <div class="field"><label>Note (optional)</label><input type="text" id="inp-note" placeholder="Any notes…" value="${noteVal}" oninput="noteVal=this.value"></div>
+        <div class="field"><label>Date &amp; time ${backdateVal?'<span style="color:#e53935">· backdated</span>':''}</label>
+          <input type="datetime-local" id="inp-backdate" value="${backdateVal||localDatetimeValue()}">
+        </div>
+        <div class="field"><label>Note (optional)</label><input type="text" id="inp-note" placeholder="Any notes…" value="${noteVal}"></div>
         <button class="btn-primary" style="background:var(--nap)" onclick="logEntry()">Save Nap</button>`
       }
     </div></div>`;
@@ -521,21 +633,26 @@ function render() {
   // ── Setup modal ──
   if(modal==='setup'){
     const CODE=`const SHEET_NAME = 'Logs';
+const TIMER_KEY  = 'bt_timer_state';
 
 function doGet(e) {
   const sheet = getSheet();
-  const rows = sheet.getDataRange().getValues();
-  const logs = rows.slice(1).map(r => ({
+  const rows  = sheet.getDataRange().getValues();
+  const logs  = rows.slice(1).map(r => ({
     id: r[0], type: r[1], timestamp: r[2],
     who: r[3], feedType: r[4], duration: r[5],
     amount: r[6], note: r[7], napLocation: r[8]
   })).filter(r => r.id);
-  return json({ logs });
+  const props = PropertiesService.getScriptProperties();
+  const timerRaw = props.getProperty(TIMER_KEY);
+  const timerState = timerRaw ? JSON.parse(timerRaw) : null;
+  return json({ logs, timerState });
 }
 
 function doPost(e) {
-  const body = JSON.parse(e.postData.contents);
+  const body  = JSON.parse(e.postData.contents);
   const sheet = getSheet();
+  const props = PropertiesService.getScriptProperties();
   if (body.action === 'add') {
     const en = body.entry;
     sheet.appendRow([en.id, en.type, en.timestamp,
@@ -547,6 +664,9 @@ function doPost(e) {
     for (let i = rows.length-1; i >= 1; i--) {
       if (rows[i][0] === body.id) { sheet.deleteRow(i+1); break; }
     }
+  }
+  if (body.action === 'timer') {
+    props.setProperty(TIMER_KEY, JSON.stringify(body.state));
   }
   return json({ ok: true });
 }
@@ -567,27 +687,23 @@ function json(obj) {
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }`;
-
     h+=`<div class="overlay" onclick="closeModal()"><div class="sheet" onclick="event.stopPropagation()">
       <div class="sheet-header">
         <div class="sheet-title">🔗 Connect to Google Sheets</div>
         <button class="close-btn" onclick="closeModal()">×</button>
       </div>
-      <div class="info-box">Takes ~5 minutes, free. Both phones will share data in real time.</div>
+      <div class="info-box">Takes ~5 minutes, free. Both phones share data in real time.</div>
       <div class="setup-step"><div class="step-num">1</div><div class="step-text"><strong>Create a Google Sheet</strong>Go to sheets.google.com → New blank spreadsheet → name it "Baby Tracker".</div></div>
-      <div class="setup-step"><div class="step-num">2</div><div class="step-text"><strong>Open Apps Script</strong>Click <strong>Extensions → Apps Script</strong>. Delete all existing code and paste in the code below.</div></div>
-      <div class="code-block">
-        <button class="copy-code-btn" onclick="copyScript()">Copy</button>
-        <pre id="script-code">${CODE.replace(/</g,'&lt;')}</pre>
-      </div>
-      <div class="setup-step"><div class="step-num">3</div><div class="step-text"><strong>Deploy</strong>Click <strong>Deploy → New deployment</strong>. Set type to <strong>Web app</strong>, Execute as <strong>Me</strong>, Who has access <strong>Anyone</strong>. Click Deploy and authorise.</div></div>
+      <div class="setup-step"><div class="step-num">2</div><div class="step-text"><strong>Open Apps Script</strong>Click Extensions → Apps Script. Delete all existing code and paste in the code below.</div></div>
+      <div class="code-block"><button class="copy-code-btn" onclick="copyScript()">Copy</button><pre id="script-code">${CODE.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre></div>
+      <div class="setup-step"><div class="step-num">3</div><div class="step-text"><strong>Deploy → New deployment</strong>Type: Web app · Execute as: Me · Who has access: Anyone. Click Deploy and authorise.</div></div>
       <div class="deploy-box">
         <div class="deploy-row"><span class="deploy-label">Execute as</span><span class="deploy-val">Me</span></div>
         <div class="deploy-row"><span class="deploy-label">Who has access</span><span class="deploy-val">Anyone</span></div>
       </div>
-      <div class="setup-step"><div class="step-num">4</div><div class="step-text"><strong>Paste the URL below</strong>After deploying, copy the Web App URL (ends in /exec) and paste it here.</div></div>
-      <div class="field"><label>Web App URL</label><input type="url" id="inp-url" placeholder="https://script.google.com/…/exec" value="${tempUrl}" oninput="tempUrl=this.value"></div>
-      <div class="field"><label>Your name</label><input type="text" id="inp-who" placeholder="e.g. Tim" value="${WHO}" oninput="WHO=this.value"></div>
+      <div class="setup-step"><div class="step-num">4</div><div class="step-text"><strong>Paste the Web App URL below</strong>Copy the URL ending in /exec after deploying.</div></div>
+      <div class="field"><label>Web App URL</label><input type="url" id="inp-url" placeholder="https://script.google.com/…/exec" value="${tempUrl}"></div>
+      <div class="field"><label>Your name</label><input type="text" id="inp-who" placeholder="e.g. Tim" value="${WHO}"></div>
       <button class="btn-primary" style="background:#6B9FD4" onclick="saveUrl()">Save & Connect</button>
     </div></div>`;
   }
@@ -599,12 +715,12 @@ function json(obj) {
         <div class="sheet-title">⋯ Settings</div>
         <button class="close-btn" onclick="closeModal()">×</button>
       </div>
-      <div class="field"><label>Your name</label><input type="text" id="inp-who" placeholder="e.g. Tim" value="${WHO}" oninput="WHO=this.value"></div>
+      <div class="field"><label>Your name</label><input type="text" id="inp-who" placeholder="e.g. Tim" value="${WHO}"></div>
       <button class="btn-secondary" onclick="saveWho()">Save name</button>
       <div class="divider"></div>
       ${SCRIPT_URL
-        ?`<div class="info-box">✅ <strong>Connected to Google Sheets</strong><br>Your wife just needs this HTML file and the same URL.</div>
-           <button class="btn-secondary" onclick="openModal('setup')">Change Google Script URL</button>`
+        ?`<div class="info-box">✅ <strong>Connected to Google Sheets</strong></div>
+           <button class="btn-secondary" onclick="openModal('setup')">Change Script URL</button>`
         :`<button class="btn-secondary" onclick="openModal('setup')">🔗 Set up Google Sheets sync</button>`
       }
       <div class="divider"></div>
@@ -617,23 +733,15 @@ function json(obj) {
 
   document.getElementById('app').innerHTML=h;
 
-  // Restore input values
-  const vals={
-    'inp-url':tempUrl,'inp-who':WHO,'inp-note':noteVal,
-    'inp-dur':feedDuration,'inp-amt':feedAmount,
-    'inp-nap-dur':napDuration,
-  };
-  Object.entries(vals).forEach(([id,val])=>{ const el=document.getElementById(id); if(el) el.value=val; });
+  // Restore inputs after render
+  const vals={'inp-url':tempUrl,'inp-who':WHO,'inp-note':noteVal,'inp-dur':feedDuration,'inp-amt':feedAmount,'inp-nap-dur':napDuration};
+  Object.entries(vals).forEach(([id,v])=>{ const el=document.getElementById(id); if(el) el.value=v; });
+  // Backdate default
+  const bdEl=document.getElementById('inp-backdate');
+  if(bdEl&&!backdateVal) bdEl.value=localDatetimeValue();
 
-  // Restart nap tick if active
-  if (activeNap && !napTickInterval) {
-    napTickInterval = setInterval(renderNapBar, 1000);
-  }
-}
-
-function renderNapBar() {
-  const el=document.getElementById('nap-timer-display');
-  if(el&&activeNap) el.textContent=elapsedDisplay(activeNap.startTime);
+  // Restart tick if timers active
+  if((activeNap||activeFeed)&&!tickInterval) startTick();
 }
 
 function copyScript() {
@@ -643,18 +751,17 @@ function copyScript() {
     .catch(()=>showToast('Select and copy the code manually','#888'));
 }
 
-// Auto-refresh every 60s
-setInterval(()=>{ if(SCRIPT_URL&&!modal) syncWithSheet(); }, 60000);
-setInterval(()=>{ if(!modal) render(); }, 60000);
+// Auto-sync every 30s
+setInterval(()=>{ if(SCRIPT_URL&&!modal) syncWithSheet(); }, 30000);
+setInterval(()=>{ if(!modal) renderSyncBar(); }, 60000);
 
-// Init — restore active nap if any
-try {
-  const saved=localStorage.getItem('bt-active-nap');
-  if(saved) activeNap=JSON.parse(saved);
-} catch(e){}
+// Init — restore timers from localStorage
+try { const s=localStorage.getItem('bt-active-nap');  if(s) activeNap  = JSON.parse(s); } catch(e){}
+try { const s=localStorage.getItem('bt-active-feed'); if(s) activeFeed = JSON.parse(s); } catch(e){}
 
 if(SCRIPT_URL){ syncStatus='syncing'; render(); syncWithSheet(); }
 else { syncStatus='no-url'; render(); }
+if(activeNap||activeFeed) startTick();
 </script>
 </body>
 </html>
