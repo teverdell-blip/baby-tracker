@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Baby Tracker">
+<meta name="theme-color" content="#ffffff">
+<title>Baby Tracker</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --feed: #6B9FD4; --feed-light: #EBF3FB;
+    --wee: #F0C040;  --wee-light: #FEF9E7;
+    --poo: #A97C50;  --poo-light: #F5EDE3;
+    --nap: #9B8EC4;  --nap-light: #F0EDF8;
+    --bath: #4DB6AC; --bath-light: #E0F5F3;
+    --bg: #F5F6F8; --white: #fff;
+    --border: #E8E8E8; --text: #1A1A1A; --muted: #888; --faint: #BBB;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: var(--bg); color: var(--text); max-width: 480px; margin: 0 auto; min-height: 100vh; }
+
+  /* ── HEADER ── */
+  .header { background: var(--white); border-bottom: 1px solid var(--border); padding: calc(14px + var(--safe-top)) 16px 12px; position: sticky; top: 0; z-index: 20; }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .header-title { font-weight: 700; font-size: 18px; letter-spacing: -0.3px; }
+  .header-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .menu-btn { background: #F0F0F0; border: none; border-radius: 10px; padding: 8px 14px; font-size: 20px; cursor: pointer; color: #555; }
+
+  /* ── SYNC ── */
+  .sync-bar { padding: 7px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--white); }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 6px; flex-shrink: 0; }
+  .sync-left { display: flex; align-items: center; }
+  .sync-btn { border: none; border-radius: 8px; padding: 5px 12px; font-size: 12px; font-weight: 700; color: #fff; cursor: pointer; }
+
+  /* ── TIMER BARS ── */
+  .timer-bar { padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .timer-bar-left { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; min-width: 0; flex-wrap: wrap; }
+  .timer-display { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .timer-controls { display: flex; gap: 6px; flex-shrink: 0; }
+  .tctl { border: none; border-radius: 8px; padding: 6px 11px; font-size: 12px; font-weight: 700; color: #fff; cursor: pointer; white-space: nowrap; }
+
+  /* ── NAV ── */
+  .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--white); border-top: 1px solid var(--border); display: flex; padding-bottom: var(--safe-bottom); z-index: 30; }
+  .nav-btn { flex: 1; border: none; background: none; padding: 10px 0 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; color: var(--faint); }
+  .nav-btn.active { color: var(--feed); }
+  .nav-btn svg { width: 22px; height: 22px; }
+
+  /* ── TODAY ── */
+  .today-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .today-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .today-card { border-radius: 14px; padding: 12px 8px; text-align: center; }
+  .today-emoji { font-size: 20px; }
+  .today-count { font-weight: 800; font-size: 24px; line-height: 1.1; margin-top: 3px; }
+  .today-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .today-sub { font-size: 11px; font-weight: 600; margin-top: 2px; }
+
+  /* ── LOG BUTTONS ── */
+  .log-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .log-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+  .log-btn { border: none; border-radius: 12px; padding: 11px 6px; font-weight: 600; font-size: 12px; cursor: pointer; color: #fff; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: opacity 0.1s; }
+  .log-btn:active { opacity: 0.75; }
+
+  /* ── HISTORY ── */
+  .date-group { margin-bottom: 16px; }
+  .date-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 7px; }
+  .entry-list { background: var(--white); border-radius: 14px; overflow: hidden; border: 1px solid var(--border); }
+  .entry-row { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border-bottom: 1px solid #F3F3F3; }
+  .entry-row:last-child { border-bottom: none; }
+  .entry-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+  .entry-info { flex: 1; min-width: 0; }
+  .entry-title { font-weight: 600; font-size: 13px; }
+  .entry-title span { font-weight: 400; color: var(--muted); }
+  .entry-note { font-size: 11px; color: #AAA; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .entry-meta { text-align: right; flex-shrink: 0; }
+  .entry-time { font-size: 12px; color: var(--muted); }
+  .entry-who { font-size: 11px; color: var(--faint); margin-top: 1px; }
+  .remove-btn { background: none; border: none; color: #DDD; font-size: 11px; cursor: pointer; padding: 2px 0; margin-top: 2px; display: block; }
+
+  /* ── DASHBOARD ── */
+  .dash-card { background: var(--white); border-radius: 16px; border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; }
+  .dash-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .dash-card-title { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .dash-card-actions { display: flex; gap: 5px; }
+  .dash-card-btn { background: #F4F4F4; border: none; border-radius: 6px; width: 26px; height: 26px; font-size: 13px; cursor: pointer; color: #666; display: flex; align-items: center; justify-content: center; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 80px; margin-bottom: 6px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; justify-content: flex-end; }
+  .bar-seg-wrap { width: 100%; display: flex; flex-direction: column; justify-content: flex-end; flex: 1; gap: 1px; }
+  .bar { border-radius: 4px 4px 0 0; width: 100%; min-height: 2px; }
+  .bar-label { font-size: 9px; color: var(--muted); text-align: center; white-space: nowrap; }
+  .line-chart-wrap { width: 100%; overflow: visible; }
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .stat-box { background: var(--bg); border-radius: 10px; padding: 10px; text-align: center; }
+  .stat-val { font-size: 20px; font-weight: 800; }
+  .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .range-pills { display: flex; gap: 5px; }
+  .range-pill { border: 1.5px solid var(--border); background: var(--white); border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 600; color: #666; cursor: pointer; }
+  .range-pill.active { border-color: var(--feed); background: var(--feed-light); color: var(--feed); }
+  .sleep-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; }
+  .sleep-day { width: 28px; color: var(--muted); font-size: 11px; flex-shrink: 0; }
+  .sleep-bar-track { flex: 1; height: 14px; background: #F0F0F0; border-radius: 7px; overflow: hidden; }
+  .sleep-bar-fill { height: 100%; border-radius: 7px; }
+  .sleep-val { width: 36px; text-align: right; color: #555; font-weight: 600; flex-shrink: 0; font-size: 11px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #666; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+  .add-chart-btn { width: 100%; border: 2px dashed var(--border); background: transparent; border-radius: 16px; padding: 18px; font-size: 14px; font-weight: 600; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; }
+  .add-chart-btn:hover { border-color: var(--feed); color: var(--feed); background: var(--feed-light); }
+
+  /* ── MODALS ── */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 50; display: flex; align-items: flex-end; }
+  .sheet { background: var(--white); border-radius: 20px 20px 0 0; padding: 22px 18px calc(28px + var(--safe-bottom)); width: 100%; max-width: 480px; margin: 0 auto; max-height: 92vh; overflow-y: auto; }
+  .sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .sheet-title { font-weight: 700; font-size: 17px; display: flex; align-items: center; gap: 10px; }
+  .close-btn { background: #F0F0F0; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 18px; cursor: pointer; color: #555; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 7px; }
+  .pill { padding: 7px 13px; border-radius: 20px; border: 2px solid #E8E8E8; background: #fff; color: #555; font-weight: 600; font-size: 13px; cursor: pointer; }
+  .pill.af { border-color: var(--feed); background: var(--feed-light); color: var(--feed); }
+  .pill.an { border-color: var(--nap); background: var(--nap-light); color: var(--nap); }
+  .pill.ab { border-color: var(--bath); background: var(--bath-light); color: var(--bath); }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 5px; }
+  .field input, .field select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #E8E8E8; font-size: 15px; outline: none; background: #fff; -webkit-appearance: none; }
+  .field input:focus, .field select:focus { border-color: #AACCE8; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn-primary { width: 100%; border: none; border-radius: 14px; padding: 15px; font-weight: 700; font-size: 16px; cursor: pointer; color: #fff; margin-bottom: 10px; }
+  .btn-secondary { width: 100%; background: #F0F0F0; border: none; border-radius: 12px; padding: 13px; font-weight: 700; font-size: 15px; cursor: pointer; color: #333; margin-bottom: 10px; display: block; text-align: center; }
+  .btn-danger { width: 100%; background: none; border: 1.5px solid #e53935; border-radius: 12px; padding: 11px; font-weight: 600; font-size: 14px; cursor: pointer; color: #e53935; }
+  .btn-danger-confirm { background: #e53935; color: #fff; border: none; border-radius: 10px; padding: 10px; font-weight: 600; font-size: 14px; cursor: pointer; flex: 1; }
+  .btn-cancel { background: #F0F0F0; border: none; border-radius: 10px; padding: 10px; font-weight: 600; font-size: 14px; cursor: pointer; flex: 1; }
+  .info-box { background: #F8F8F8; border-radius: 12px; padding: 13px; margin-bottom: 13px; font-size: 13px; color: #555; line-height: 1.6; }
+  .warn-box { background: #FFF8E7; border-radius: 12px; padding: 13px; margin-bottom: 13px; font-size: 13px; color: #7A5C00; line-height: 1.6; }
+  .confirm-box { background: #FFF0F0; border-radius: 12px; padding: 13px; }
+  .confirm-box p { font-size: 14px; font-weight: 600; color: #c62828; margin-bottom: 10px; }
+  .confirm-row { display: flex; gap: 8px; }
+  .seg-row { display: flex; background: #F0F0F0; border-radius: 10px; padding: 3px; margin-bottom: 14px; }
+  .seg-btn { flex: 1; border: none; border-radius: 8px; padding: 8px; font-size: 13px; font-weight: 600; cursor: pointer; background: transparent; color: #666; }
+  .seg-btn.active { background: #fff; color: #1A1A1A; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+  .code-block { background: #1A1E2E; border-radius: 10px; padding: 14px; margin: 10px 0; position: relative; }
+  .code-block pre { color: #E2E8F0; font-size: 11px; line-height: 1.7; white-space: pre-wrap; font-family: monospace; margin: 0; }
+  .copy-code-btn { position: absolute; top: 10px; right: 10px; background: #334155; border: none; border-radius: 6px; color: #94A3B8; padding: 5px 10px; font-size: 11px; cursor: pointer; }
+  .deploy-box { background: #fff; border: 1px solid #E8EBF0; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+  .deploy-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #F3F3F3; font-size: 13px; }
+  .deploy-row:last-child { border-bottom: none; }
+  .deploy-label { color: #666; }
+  .deploy-val { font-weight: 600; background: #EBF3FB; border-radius: 6px; padding: 3px 10px; font-size: 12px; color: #4A7FB5; }
+  .setup-step { display: flex; gap: 12px; margin-bottom: 14px; }
+  .step-num { background: #6B9FD4; color: #fff; border-radius: 50%; width: 26px; height: 26px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-text { font-size: 13px; color: #444; line-height: 1.6; flex: 1; }
+  .step-text strong { color: #111; display: block; margin-bottom: 2px; }
+  .toast { position: fixed; top: calc(14px + var(--safe-top)); left: 50%; transform: translateX(-50%); color: #fff; padding: 10px 20px; border-radius: 24px; font-weight: 600; font-size: 14px; z-index: 999; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+  .empty { text-align: center; padding: 40px 20px; color: var(--faint); }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-title { font-weight: 600; font-size: 15px; color: #AAA; }
+  .empty-sub { font-size: 13px; margin-top: 4px; }
+  .content { padding: 14px 14px 80px; }
+  .divider { height: 1px; background: #F0F0F0; margin: 14px 0; }
+  .section-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  input[type="datetime-local"] { font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ── CONFIG ──
+let SCRIPT_URL = localStorage.getItem('bt-script-url') || '';
+let WHO = localStorage.getItem('bt-who') || '';
+
+// ── STATE ──
+let logs = [];
+let tab = 'home';
+let modal = null;
+let feedType = 'Breast L';
+let feedDuration = '', feedAmount = '', noteVal = '';
+let feedDurH = '0', feedDurM = '0';
+let napDuration = '', napLocation = '';
+let napDurH = '0', napDurM = '0';
+let bathDurH = '0', bathDurM = '0';
+let napMode = 'timer', feedMode = 'timer', bathMode = 'timer';
+let bathTemp = '', bathNotes = '';
+let confirmClear = false;
+let syncStatus = 'idle', lastSync = null, toastTimer = null;
+let tempUrl = '', backdateVal = '';
+let dashCharts = JSON.parse(localStorage.getItem('bt-dash-charts') || 'null') || defaultCharts();
+let editingChart = null;
+
+// Active timers
+let activeNap = null, activeFeed = null, activeBath = null;
+let tickInterval = null;
+
+const FEED_TYPES = ['Breast L','Breast R','Both','Formula','Expressed'];
+const NAP_LOCATIONS = ['Cot','Pram','Arms','Car','Carrier'];
+const BATH_TEMPS = ['Warm','Cool','Not sure'];
+
+const TYPES = {
+  feed: { label:'Feed',  emoji:'🍼', color:'#6B9FD4', light:'#EBF3FB' },
+  wee:  { label:'Wee',   emoji:'💛', color:'#F0C040', light:'#FEF9E7' },
+  poo:  { label:'Poo',   emoji:'💩', color:'#A97C50', light:'#F5EDE3' },
+  nap:  { label:'Nap',   emoji:'😴', color:'#9B8EC4', light:'#F0EDF8' },
+  bath: { label:'Bath',  emoji:'🛁', color:'#4DB6AC', light:'#E0F5F3' },
+};
+
+const METRICS = [
+  { key:'feeds',    label:'Feeds',           color:'#6B9FD4' },
+  { key:'wees',     label:'Wees',            color:'#F0C040' },
+  { key:'poos',     label:'Poos',            color:'#A97C50' },
+  { key:'naps',     label:'Nap count',       color:'#9B8EC4' },
+  { key:'napMins',  label:'Sleep (mins)',    color:'#9B8EC4' },
+  { key:'baths',    label:'Baths',           color:'#4DB6AC' },
+  { key:'nappy',    label:'Nappy (stacked)', color:'multi'   },
+];
+const CHART_TYPES_MAP = {
+  feeds:'bar,line', wees:'bar,line', poos:'bar,line',
+  naps:'bar,line', napMins:'bar,line,sleep-bars',
+  baths:'bar,line', nappy:'bar'
+};
+
+function defaultCharts() {
+  return [
+    { id:1, title:'Feeds per day',  metric:'feeds',   type:'bar',       range:7 },
+    { id:2, title:'Daily sleep',    metric:'napMins', type:'sleep-bars',range:7 },
+    { id:3, title:'Nappy activity', metric:'nappy',   type:'bar',       range:7 },
+    { id:4, title:'Baths per week', metric:'baths',   type:'bar',       range:14 },
+  ];
+}
+
+// ── HELPERS ──
+function fmt(iso) { return new Date(iso).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',hour12:true}); }
+function fmtDate(iso) {
+  const d=new Date(iso),today=new Date(),yest=new Date(); yest.setDate(today.getDate()-1);
+  if(d.toDateString()===today.toDateString()) return 'Today';
+  if(d.toDateString()===yest.toDateString()) return 'Yesterday';
+  return d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+}
+function fmtShort(d) { return d.toLocaleDateString('en-AU',{weekday:'short'}); }
+function timeSince(iso) {
+  const m=Math.floor((Date.now()-new Date(iso))/60000);
+  if(m<1)return 'just now'; if(m<60)return m+'m ago';
+  return Math.floor(m/60)+'h '+(m%60)+'m ago';
+}
+function fmtDur(mins) {
+  mins=parseInt(mins)||0; if(mins===0)return '0m'; if(mins<60)return mins+'m';
+  return Math.floor(mins/60)+'h'+(mins%60>0?' '+(mins%60)+'m':'');
+}
+function groupByDate(arr) {
+  const g={};
+  [...arr].reverse().forEach(e=>{ const k=new Date(e.timestamp).toDateString(); if(!g[k])g[k]=[]; g[k].push(e); });
+  return g;
+}
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function totalNapMins(dl) { return dl.filter(l=>l.type==='nap').reduce((s,l)=>s+(parseInt(l.duration)||0),0); }
+function localDatetimeValue(d) {
+  const dt=d||new Date(),pad=n=>String(n).padStart(2,'0');
+  return `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+}
+function showToast(msg,color='#4CAF50') {
+  const old=document.getElementById('toast'); if(old)old.remove();
+  if(toastTimer)clearTimeout(toastTimer);
+  const t=document.createElement('div'); t.id='toast'; t.className='toast'; t.style.background=color; t.textContent=msg;
+  document.body.appendChild(t); toastTimer=setTimeout(()=>t.remove(),2800);
+}
+function getDayRange(n) {
+  const days=[];
+  for(let i=n-1;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); d.setHours(0,0,0,0); days.push(d); }
+  return days;
+}
+function getDashData(n) {
+  const days=getDayRange(n);
+  return days.map(d=>{
+    const key=d.toDateString();
+    const dl=logs.filter(l=>new Date(l.timestamp).toDateString()===key);
+    return { date:d, label:fmtShort(d),
+      feeds:dl.filter(l=>l.type==='feed').length,
+      wees: dl.filter(l=>l.type==='wee').length,
+      poos: dl.filter(l=>l.type==='poo').length,
+      naps: dl.filter(l=>l.type==='nap').length,
+      baths:dl.filter(l=>l.type==='bath').length,
+      napMins:totalNapMins(dl),
+    };
+  });
+}
+
+// ── TIMERS ──
+function timerElapsedMs(t) {
+  if(!t)return 0; let ms=t.elapsed||0;
+  if(!t.paused&&t.startTime)ms+=Date.now()-new Date(t.startTime).getTime(); return ms;
+}
+function timerDisplay(t) {
+  const ms=timerElapsedMs(t),s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+  if(h>0)return h+'h '+String(m).padStart(2,'0')+'m'; return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+}
+function timerMins(t){return Math.round(timerElapsedMs(t)/60000);}
+
+function saveTimers() {
+  localStorage.setItem('bt-active-nap', activeNap?JSON.stringify(activeNap):'');
+  localStorage.setItem('bt-active-feed', activeFeed?JSON.stringify(activeFeed):'');
+  localStorage.setItem('bt-active-bath', activeBath?JSON.stringify(activeBath):'');
+  if(SCRIPT_URL) fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'timer',state:{activeNap,activeFeed,activeBath}})}).catch(()=>{});
+}
+function pauseTimer(type) {
+  const t=type==='nap'?activeNap:type==='feed'?activeFeed:activeBath; if(!t||t.paused)return;
+  t.elapsed=timerElapsedMs(t); t.startTime=null; t.paused=true; saveTimers(); render();
+}
+function resumeTimer(type) {
+  const t=type==='nap'?activeNap:type==='feed'?activeFeed:activeBath; if(!t||!t.paused)return;
+  t.startTime=new Date().toISOString(); t.paused=false; saveTimers(); startTick(); render();
+}
+function stopTimer(type) {
+  const t=type==='nap'?activeNap:type==='feed'?activeFeed:activeBath; if(!t)return;
+  const mins=Math.max(1,timerMins(t));
+  const entry={id:uid(),type,timestamp:t.originalStart||t.startTime,duration:String(mins),who:t.who||WHO||null,note:null,
+    ...(type==='feed'&&{feedType:t.feedType||feedType}),
+    ...(type==='nap'&&{napLocation:null}),
+    ...(type==='bath'&&{bathTemp:null}),
+  };
+  if(type==='nap')activeNap=null; else if(type==='feed')activeFeed=null; else activeBath=null;
+  saveTimers(); logs.push(entry); modal=null; render();
+  showToast(TYPES[type].emoji+' '+TYPES[type].label+' saved — '+fmtDur(mins),TYPES[type].color);
+  syncWithSheet(entry);
+}
+function startTick() {
+  if(tickInterval)return;
+  tickInterval=setInterval(()=>{
+    const nd=document.getElementById('nap-td'),fd=document.getElementById('feed-td'),bd=document.getElementById('bath-td');
+    if(nd&&activeNap&&!activeNap.paused)nd.textContent=timerDisplay(activeNap);
+    if(fd&&activeFeed&&!activeFeed.paused)fd.textContent=timerDisplay(activeFeed);
+    if(bd&&activeBath&&!activeBath.paused)bd.textContent=timerDisplay(activeBath);
+    if(!activeNap&&!activeFeed&&!activeBath){clearInterval(tickInterval);tickInterval=null;}
+  },1000);
+}
+
+// ── SYNC ──
+async function syncWithSheet(newEntry=null) {
+  if(!SCRIPT_URL){syncStatus='no-url';renderSyncBar();return;}
+  syncStatus='syncing'; renderSyncBar();
+  try {
+    const res=await fetch(SCRIPT_URL+'?action=get');
+    const data=await res.json();
+    const remote=Array.isArray(data.logs)?data.logs:[];
+    const ids=new Set(logs.map(l=>l.id));
+    remote.forEach(r=>{if(!ids.has(r.id))logs.push(r);});
+    logs.sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
+    if(data.timerState){
+      if(data.timerState.activeNap&&!activeNap){activeNap=data.timerState.activeNap;startTick();}
+      if(data.timerState.activeFeed&&!activeFeed){activeFeed=data.timerState.activeFeed;startTick();}
+      if(data.timerState.activeBath&&!activeBath){activeBath=data.timerState.activeBath;startTick();}
+    }
+    if(newEntry)await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'add',entry:newEntry})});
+    lastSync=new Date(); syncStatus='ok';
+  } catch(e){syncStatus='error';}
+  render();
+}
+async function deleteFromSheet(id) {
+  if(!SCRIPT_URL)return;
+  try{await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'delete',id})});}catch(e){}
+}
+function renderSyncBar() {
+  const bar=document.getElementById('sync-bar'); if(!bar)return;
+  const dotColor=syncStatus==='ok'?'#4CAF50':syncStatus==='error'?'#e53935':syncStatus==='syncing'?'#F0C040':'#CCC';
+  const label=syncStatus==='ok'?(lastSync?'Synced '+timeSince(lastSync.toISOString()):'Synced'):
+    syncStatus==='syncing'?'Syncing…':syncStatus==='error'?'Sync failed':'Not connected';
+  const dot=bar.querySelector('.sync-dot'),lbl=bar.querySelector('.sync-label');
+  if(dot)dot.style.background=dotColor; if(lbl)lbl.textContent=label;
+}
+
+// ── ACTIONS ──
+function setTab(t){tab=t;render();}
+function openModal(type){
+  modal=type; feedType='Breast L'; feedDuration=''; feedAmount=''; noteVal='';
+  napDuration=''; napLocation=''; napMode='timer'; feedMode='timer'; bathMode='timer';
+  feedDurH='0';feedDurM='0';napDurH='0';napDurM='0';bathDurH='0';bathDurM='0';
+  bathTemp=''; bathNotes=''; confirmClear=false; backdateVal=''; editingChart=null;
+  render();
+}
+function closeModal(){modal=null;confirmClear=false;editingChart=null;render();}
+function setFeedType(ft){feedType=ft;render();}
+function setNapLoc(l){napLocation=l;render();}
+function setNapMode(m){napMode=m;render();}
+function setFeedMode(m){feedMode=m;render();}
+function setBathMode(m){bathMode=m;render();}
+function setBathTemp(t){bathTemp=t;render();}
+
+function readInputs(){
+  const g=id=>{const el=document.getElementById(id);return el?el.value:'';};
+  feedDurH=g('inp-dur-h')||feedDurH; feedDurM=g('inp-dur-m')||feedDurM;
+  feedDuration=String((parseInt(feedDurH)||0)*60+(parseInt(feedDurM)||0)) ;
+  feedAmount=g('inp-amt')||feedAmount;
+  noteVal=g('inp-note')||noteVal; tempUrl=g('inp-url')||tempUrl;
+  WHO=g('inp-who')||WHO;
+  napDurH=g('inp-nap-dur-h')||napDurH; napDurM=g('inp-nap-dur-m')||napDurM;
+  napDuration=String((parseInt(napDurH)||0)*60+(parseInt(napDurM)||0));
+  bathDurH=g('inp-bath-dur-h')||bathDurH; bathDurM=g('inp-bath-dur-m')||bathDurM;
+  backdateVal=g('inp-backdate')||backdateVal;
+  bathNotes=g('inp-bath-note')||bathNotes;
+  if(editingChart){
+    editingChart.chart.title=g('inp-chart-title')||editingChart.chart.title;
+    editingChart.chart.metric=g('inp-chart-metric')||editingChart.chart.metric;
+    editingChart.chart.type=g('inp-chart-type')||editingChart.chart.type;
+    editingChart.chart.range=parseInt(g('inp-chart-range'))||editingChart.chart.range;
+  }
+}
+
+async function logEntry(){
+  readInputs();
+  const isNap=modal==='nap', isFeed=modal==='feed', isBath=modal==='bath';
+  const useTimer=(isNap&&napMode==='timer')||(isFeed&&feedMode==='timer')||(isBath&&bathMode==='timer');
+
+  if(useTimer){
+    if(isNap&&activeNap){showToast('A nap is already running','#e53935');return;}
+    if(isFeed&&activeFeed){showToast('A feed is already running','#e53935');return;}
+    if(isBath&&activeBath){showToast('A bath is already running','#e53935');return;}
+    const timer={startTime:new Date().toISOString(),elapsed:0,paused:false,who:WHO||'',
+      feedType:isFeed?feedType:null};
+    timer.originalStart=timer.startTime;
+    if(isNap)activeNap=timer; else if(isFeed)activeFeed=timer; else activeBath=timer;
+    saveTimers(); startTick(); modal=null; render();
+    const type=isNap?'nap':isFeed?'feed':'bath';
+    showToast(TYPES[type].emoji+' Timer started!',TYPES[type].color);
+    return;
+  }
+
+  const timestamp=backdateVal?new Date(backdateVal).toISOString():new Date().toISOString();
+  let entry;
+  if(isNap) entry={id:uid(),type:'nap',timestamp,duration:napDuration||null,napLocation:napLocation||null,who:WHO||null,note:noteVal||null};
+  else if(isFeed) entry={id:uid(),type:'feed',timestamp,feedType,duration:feedDuration||null,amount:feedAmount||null,who:WHO||null,note:noteVal||null};
+  else if(isBath) { const bathMins=(parseInt(bathDurH)||0)*60+(parseInt(bathDurM)||0); entry={id:uid(),type:'bath',timestamp,duration:bathMins>0?String(bathMins):null,bathTemp:bathTemp||null,who:WHO||null,note:bathNotes||null}; }
+  else entry={id:uid(),type:modal,timestamp,who:WHO||null,note:noteVal||null};
+
+  logs.push(entry);
+  const t=TYPES[modal]; modal=null; render();
+  showToast(t.emoji+' '+t.label+' logged!',t.color);
+  await syncWithSheet(entry);
+}
+
+async function removeEntry(id){
+  logs=logs.filter(l=>l.id!==id); render();
+  await deleteFromSheet(id); await syncWithSheet();
+}
+function clearAll(){logs=[];confirmClear=false;modal=null;render();showToast('🗑️ Data cleared');}
+function saveUrl(){
+  readInputs(); if(!tempUrl){showToast('Please paste a URL first','#e53935');return;}
+  SCRIPT_URL=tempUrl; localStorage.setItem('bt-script-url',SCRIPT_URL);
+  if(WHO)localStorage.setItem('bt-who',WHO);
+  modal=null; showToast('✅ Connected!'); syncWithSheet();
+}
+function saveWho(){readInputs();if(WHO)localStorage.setItem('bt-who',WHO);modal=null;render();}
+
+// ── DASHBOARD ──
+function saveDashCharts(){localStorage.setItem('bt-dash-charts',JSON.stringify(dashCharts));}
+function openAddChart(){
+  editingChart={idx:-1,chart:{id:Date.now(),title:'New chart',metric:'feeds',type:'bar',range:7}};
+  modal='edit-chart'; render();
+}
+function editChart(idx){editingChart={idx,chart:{...dashCharts[idx]}};modal='edit-chart';render();}
+function saveChart(){
+  readInputs();
+  if(editingChart.idx===-1)dashCharts.push(editingChart.chart);
+  else dashCharts[editingChart.idx]=editingChart.chart;
+  saveDashCharts(); editingChart=null; modal=null; render();
+}
+function deleteChart(idx){dashCharts.splice(idx,1);saveDashCharts();render();}
+function moveChart(idx,dir){
+  const to=idx+dir; if(to<0||to>=dashCharts.length)return;
+  [dashCharts[idx],dashCharts[to]]=[dashCharts[to],dashCharts[idx]];
+  saveDashCharts(); render();
+}
+
+// ── CHART RENDERERS ──
+function buildBarChart(data,key,color){
+  const vals=data.map(d=>d[key]),max=Math.max(...vals,1);
+  return `<div class="bar-chart">${data.map(d=>{
+    const h=Math.round((d[key]/max)*70);
+    return `<div class="bar-col"><div class="bar-seg-wrap"><div class="bar" style="height:${h||2}px;background:${color};opacity:${d[key]>0?1:0.18}"></div></div><div class="bar-label">${d.label}</div></div>`;
+  }).join('')}</div>`;
+}
+function buildStackedBar(data){
+  const maxCount=Math.max(...data.map(d=>d.feeds+d.wees+d.poos),1);
+  return `<div class="bar-chart">${data.map(d=>{
+    const total=d.feeds+d.wees+d.poos,scale=total>0?Math.round((total/maxCount)*70):0;
+    const fh=total>0?Math.round((d.feeds/total)*scale):0;
+    const wh=total>0?Math.round((d.wees/total)*scale):0;
+    const ph=total>0?Math.round((d.poos/total)*scale):0;
+    return `<div class="bar-col"><div class="bar-seg-wrap" style="gap:1px">
+      ${d.poos>0?`<div class="bar" style="height:${ph}px;background:#A97C50"></div>`:''}
+      ${d.wees>0?`<div class="bar" style="height:${wh}px;background:#F0C040"></div>`:''}
+      ${d.feeds>0?`<div class="bar" style="height:${fh}px;background:#6B9FD4"></div>`:''}
+      ${total===0?`<div class="bar" style="height:2px;background:#EEE"></div>`:''}
+    </div><div class="bar-label">${d.label}</div></div>`;
+  }).join('')}
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#6B9FD4"></div>Feeds</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#F0C040"></div>Wees</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#A97C50"></div>Poos</div>
+  </div></div>`;
+}
+function buildSleepBars(data,key,color){
+  key=key||'napMins'; color=color||'#9B8EC4';
+  const maxMins=Math.max(...data.map(d=>d[key]),60);
+  return data.map(d=>`<div class="sleep-row">
+    <div class="sleep-day">${d.label}</div>
+    <div class="sleep-bar-track"><div class="sleep-bar-fill" style="width:${Math.round((d[key]/maxMins)*100)}%;background:${color}"></div></div>
+    <div class="sleep-val">${d[key]>0?fmtDur(d[key]):'—'}</div>
+  </div>`).join('');
+}
+function buildLineChart(data,key,color){
+  const vals=data.map(d=>d[key]),max=Math.max(...vals,1);
+  const W=340,H=60,pad=4;
+  const pts=vals.map((v,i)=>{const x=pad+(i/(vals.length-1||1))*(W-pad*2),y=H-pad-(v/max)*(H-pad*2);return `${x},${y}`;});
+  const pathD='M'+pts.join(' L'),areaD=pathD+` L${W-pad},${H} L${pad},${H} Z`;
+  return `<svg viewBox="0 0 ${W} ${H}" class="line-chart-wrap" style="height:${H}px">
+    <defs><linearGradient id="lg${key}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${color}" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="${color}" stop-opacity="0.02"/>
+    </linearGradient></defs>
+    <path d="${areaD}" fill="url(#lg${key})"/>
+    <path d="${pathD}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${vals.map((v,i)=>{const x=pad+(i/(vals.length-1||1))*(W-pad*2),y=H-pad-(v/max)*(H-pad*2);return v>0?`<circle cx="${x}" cy="${y}" r="3.5" fill="${color}"/>`:'';}).join('')}
+  </svg>`;
+}
+function renderChart(chart){
+  const data=getDashData(chart.range);
+  const m=METRICS.find(x=>x.key===chart.metric)||METRICS[0];
+  if(chart.metric==='nappy')return buildStackedBar(data);
+  if(chart.type==='sleep-bars')return buildSleepBars(data,chart.metric,m.color);
+  if(chart.type==='line')return buildLineChart(data,chart.metric,m.color);
+  return buildBarChart(data,chart.metric,m.color);
+}
+
+// ── RENDER ──
+function render(){
+  const todayStr=new Date().toDateString();
+  const todayLogs=logs.filter(l=>new Date(l.timestamp).toDateString()===todayStr);
+  const counts={feed:0,wee:0,poo:0,nap:0,bath:0};
+  todayLogs.forEach(l=>counts[l.type]=(counts[l.type]||0)+1);
+  const totalNap=totalNapMins(todayLogs);
+  const lastFeed=[...logs].reverse().find(l=>l.type==='feed');
+  const lastBath=[...logs].reverse().find(l=>l.type==='bath');
+  const isSetup=!SCRIPT_URL;
+  const dotColor=syncStatus==='ok'?'#4CAF50':syncStatus==='error'?'#e53935':syncStatus==='syncing'?'#F0C040':'#CCC';
+  const syncLabel=syncStatus==='ok'?(lastSync?'Synced '+timeSince(lastSync.toISOString()):'Synced'):
+    syncStatus==='syncing'?'Syncing…':syncStatus==='error'?'Sync failed':'Not connected';
+
+  let h=`
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <span style="font-size:24px">👶</span>
+        <div>
+          <div class="header-title">Baby Tracker</div>
+          <div class="header-sub">${lastFeed?'Last feed: '+timeSince(lastFeed.timestamp)+' · '+(lastFeed.feedType||''):'No feeds yet'}</div>
+        </div>
+      </div>
+      <button class="menu-btn" onclick="openModal('menu')">⋯</button>
+    </div>
+  </div>
+  <div id="sync-bar" class="sync-bar">
+    <div class="sync-left"><span class="sync-dot" style="background:${dotColor}"></span><span class="sync-label" style="font-size:12px;color:#666">${syncLabel}</span></div>
+    ${isSetup
+      ?`<button class="sync-btn" style="background:#6B9FD4" onclick="openModal('setup')">Set up sync →</button>`
+      :`<button class="sync-btn" style="background:#6B9FD4" onclick="syncWithSheet()">↻ Refresh</button>`
+    }
+  </div>`;
+
+  // Timer bars
+  if(activeFeed){
+    h+=`<div class="timer-bar" style="background:#EBF3FB">
+      <div class="timer-bar-left" style="color:#3A6A9A">🍼${activeFeed.feedType?' · '+activeFeed.feedType:''} ${activeFeed.who?'('+activeFeed.who+')':''}
+        <span class="timer-display" id="feed-td" style="color:var(--feed)">${timerDisplay(activeFeed)}</span>
+      </div>
+      <div class="timer-controls">
+        ${activeFeed.paused?`<button class="tctl" style="background:#4CAF50" onclick="resumeTimer('feed')">▶</button>`:`<button class="tctl" style="background:#F0A030" onclick="pauseTimer('feed')">⏸</button>`}
+        <button class="tctl" style="background:var(--feed)" onclick="stopTimer('feed')">■ Stop</button>
+      </div>
+    </div>`;
+  }
+  if(activeNap){
+    h+=`<div class="timer-bar" style="background:var(--nap-light)">
+      <div class="timer-bar-left" style="color:#5A4A8A">😴 Napping ${activeNap.who?'('+activeNap.who+')':''}
+        <span class="timer-display" id="nap-td" style="color:var(--nap)">${timerDisplay(activeNap)}</span>
+      </div>
+      <div class="timer-controls">
+        ${activeNap.paused?`<button class="tctl" style="background:#4CAF50" onclick="resumeTimer('nap')">▶</button>`:`<button class="tctl" style="background:#F0A030" onclick="pauseTimer('nap')">⏸</button>`}
+        <button class="tctl" style="background:var(--nap)" onclick="stopTimer('nap')">■ Stop</button>
+      </div>
+    </div>`;
+  }
+  if(activeBath){
+    h+=`<div class="timer-bar" style="background:var(--bath-light)">
+      <div class="timer-bar-left" style="color:#2E7D74">🛁 Bath time ${activeBath.who?'('+activeBath.who+')':''}
+        <span class="timer-display" id="bath-td" style="color:var(--bath)">${timerDisplay(activeBath)}</span>
+      </div>
+      <div class="timer-controls">
+        ${activeBath.paused?`<button class="tctl" style="background:#4CAF50" onclick="resumeTimer('bath')">▶</button>`:`<button class="tctl" style="background:#F0A030" onclick="pauseTimer('bath')">⏸</button>`}
+        <button class="tctl" style="background:var(--bath)" onclick="stopTimer('bath')">■ Stop</button>
+      </div>
+    </div>`;
+  }
+
+  // ── HOME ──
+  if(tab==='home'){
+    h+=`<div class="content">
+    <div class="section-label">Today</div>
+    <div class="today-grid">`;
+    ['feed','wee','poo'].forEach(type=>{
+      const cfg=TYPES[type];
+      const extra=type==='feed'&&lastFeed?`<div class="today-sub" style="color:${cfg.color}">${timeSince(lastFeed.timestamp)}</div>`:'';
+      h+=`<div class="today-card" style="background:${cfg.light}">
+        <div class="today-emoji">${cfg.emoji}</div>
+        <div class="today-count" style="color:${cfg.color}">${counts[type]}</div>
+        <div class="today-label">${cfg.label}s</div>${extra}
+      </div>`;
+    });
+    h+=`</div>
+    <div class="today-grid-2">`;
+    // Nap card
+    h+=`<div class="today-card" style="background:var(--nap-light)">
+      <div class="today-emoji">😴</div>
+      <div class="today-count" style="color:var(--nap)">${counts.nap}</div>
+      <div class="today-label">Naps</div>
+      <div class="today-sub" style="color:var(--nap)">${totalNap>0?fmtDur(totalNap)+' total':'—'}</div>
+    </div>`;
+    // Bath card
+    h+=`<div class="today-card" style="background:var(--bath-light)">
+      <div class="today-emoji">🛁</div>
+      <div class="today-count" style="color:var(--bath)">${counts.bath}</div>
+      <div class="today-label">Baths</div>
+      <div class="today-sub" style="color:var(--bath)">${lastBath?timeSince(lastBath.timestamp):'—'}</div>
+    </div>`;
+    h+=`</div>
+
+    <div class="log-grid">`;
+    ['feed','wee','poo'].forEach(type=>{
+      const cfg=TYPES[type];
+      const running=type==='feed'&&activeFeed;
+      h+=`<button class="log-btn" style="background:${cfg.color}${running?';opacity:0.6':''}" onclick="openModal('${type}')">
+        <span style="font-size:18px">${cfg.emoji}</span>${running?'Running…':cfg.label}
+      </button>`;
+    });
+    h+=`</div>
+    <div class="log-grid-2">`;
+    ['nap','bath'].forEach(type=>{
+      const cfg=TYPES[type];
+      const running=(type==='nap'&&activeNap)||(type==='bath'&&activeBath);
+      h+=`<button class="log-btn" style="background:${cfg.color}${running?';opacity:0.6':''}" onclick="openModal('${type}')">
+        <span style="font-size:18px">${cfg.emoji}</span>${running?'Running…':'Log '+cfg.label}
+      </button>`;
+    });
+    h+=`</div></div>`;
+  }
+
+  // ── HISTORY ──
+  if(tab==='history'){
+    const grouped=groupByDate(logs);
+    h+=`<div class="content">`;
+    if(Object.keys(grouped).length===0){
+      h+=`<div class="empty"><div class="empty-icon">📋</div><div class="empty-title">No entries yet</div><div class="empty-sub">Tap a button on Home to get started</div></div>`;
+    } else {
+      Object.entries(grouped).forEach(([,entries])=>{
+        const dayNap=totalNapMins(entries);
+        const dayBaths=entries.filter(e=>e.type==='bath').length;
+        let dayLabel=fmtDate(entries[0].timestamp);
+        if(dayNap>0)dayLabel+=' · 😴 '+fmtDur(dayNap);
+        if(dayBaths>0)dayLabel+=' · 🛁 '+dayBaths;
+        h+=`<div class="date-group"><div class="date-label">${dayLabel}</div><div class="entry-list">`;
+        entries.forEach(e=>{
+          const cfg=TYPES[e.type]; let detail='';
+          if(e.type==='feed'){if(e.feedType)detail+=' · '+e.feedType;if(e.duration)detail+=' · '+fmtDur(parseInt(e.duration));if(e.amount)detail+=' · '+e.amount+' mL';}
+          if(e.type==='nap'){if(e.duration)detail+=' · '+fmtDur(parseInt(e.duration));if(e.napLocation)detail+=' · '+e.napLocation;}
+          if(e.type==='bath'){if(e.duration)detail+=' · '+fmtDur(parseInt(e.duration));if(e.bathTemp)detail+=' · '+e.bathTemp;}
+          h+=`<div class="entry-row">
+            <div class="entry-icon" style="background:${cfg.light}">${cfg.emoji}</div>
+            <div class="entry-info">
+              <div class="entry-title">${cfg.label}${detail?'<span>'+detail+'</span>':''}</div>
+              ${e.note?'<div class="entry-note">'+e.note+'</div>':''}
+            </div>
+            <div class="entry-meta">
+              <div class="entry-time">${fmt(e.timestamp)}</div>
+              ${e.who?'<div class="entry-who">'+e.who+'</div>':''}
+              <button class="remove-btn" onclick="removeEntry('${e.id}')">remove</button>
+            </div>
+          </div>`;
+        });
+        h+=`</div></div>`;
+      });
+    }
+    h+=`</div>`;
+  }
+
+  // ── DASHBOARD ──
+  if(tab==='dashboard'){
+    const data7=getDashData(7);
+    const avgFeeds=(data7.reduce((s,d)=>s+d.feeds,0)/7).toFixed(1);
+    const avgSleep=Math.round(data7.reduce((s,d)=>s+d.napMins,0)/7);
+    const avgWees=(data7.reduce((s,d)=>s+d.wees,0)/7).toFixed(1);
+    h+=`<div class="content">
+    <div class="stat-row" style="margin-bottom:16px">
+      <div class="stat-box"><div class="stat-val" style="color:var(--feed)">${avgFeeds}</div><div class="stat-lbl">Feeds/day</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:var(--nap)">${fmtDur(avgSleep)}</div><div class="stat-lbl">Sleep/day</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:var(--wee)">${avgWees}</div><div class="stat-lbl">Wees/day</div></div>
+    </div>`;
+    if(logs.length===0){
+      h+=`<div class="empty"><div class="empty-icon">📊</div><div class="empty-title">No data yet</div><div class="empty-sub">Log some entries to see charts</div></div>`;
+    } else {
+      dashCharts.forEach((chart,idx)=>{
+        h+=`<div class="dash-card">
+          <div class="dash-card-header">
+            <div class="dash-card-title">${chart.title} · ${chart.range}d</div>
+            <div class="dash-card-actions">
+              <button class="dash-card-btn" onclick="moveChart(${idx},-1)">↑</button>
+              <button class="dash-card-btn" onclick="moveChart(${idx},1)">↓</button>
+              <button class="dash-card-btn" onclick="editChart(${idx})">✏️</button>
+              <button class="dash-card-btn" onclick="deleteChart(${idx})" style="color:#e53935">×</button>
+            </div>
+          </div>
+          ${renderChart(chart)}
+        </div>`;
+      });
+      h+=`<button class="add-chart-btn" onclick="openAddChart()">＋ Add chart</button>`;
+    }
+    h+=`</div>`;
+  }
+
+  // ── NAV ──
+  h+=`<nav class="bottom-nav">
+    <button class="nav-btn${tab==='home'?' active':''}" onclick="setTab('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
+    </button>
+    <button class="nav-btn${tab==='history'?' active':''}" onclick="setTab('history')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>History
+    </button>
+    <button class="nav-btn${tab==='dashboard'?' active':''}" onclick="setTab('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Dashboard
+    </button>
+  </nav>`;
+
+  // ── FEED MODAL ──
+  if(modal==='feed'){
+    h+=`<div class="overlay" onclick="closeModal()"><div class="sheet" onclick="event.stopPropagation()">
+      <div class="sheet-header"><div class="sheet-title"><span>🍼</span>Log Feed</div><button class="close-btn" onclick="closeModal()">×</button></div>
+      ${activeFeed?'<div class="warn-box">A feed timer is already running — stop it from the bar above first.</div>':''}
+      <div class="seg-row">
+        <button class="seg-btn${feedMode==='timer'?' active':''}" onclick="setFeedMode('timer')">⏱ Timer</button>
+        <button class="seg-btn${feedMode==='manual'?' active':''}" onclick="setFeedMode('manual')">✏️ Manual</button>
+      </div>
+      <div class="field"><label>Feed type</label><div class="pill-row">
+        ${FEED_TYPES.map(ft=>`<button class="pill${feedType===ft?' af':''}" onclick="setFeedType('${ft}')">${ft}</button>`).join('')}
+      </div></div>
+      ${feedMode==='timer'&&!activeFeed
+        ?`<div class="info-box">Tap <strong>Start Feed Timer</strong>. Pause and resume as needed. Stop from the bar at the top when done.</div>
+          <button class="btn-primary" style="background:var(--feed)" onclick="logEntry()">🍼 Start Feed Timer</button>`
+        :feedMode==='manual'
+        ?`<div class="two-col">
+            <div class="field"><label>Duration</label><div style="display:flex;gap:8px;align-items:center">
+              <input type="number" id="inp-dur-h" min="0" max="5" placeholder="0" value="${feedDurH}" style="width:64px;padding:10px 8px;border-radius:10px;border:1.5px solid #E8E8E8;font-size:15px;outline:none;text-align:center">
+              <span style="font-size:13px;color:var(--muted);font-weight:600">hr</span>
+              <input type="number" id="inp-dur-m" min="0" max="59" placeholder="0" value="${feedDurM}" style="width:64px;padding:10px 8px;border-radius:10px;border:1.5px solid #E8E8E8;font-size:15px;outline:none;text-align:center">
+              <span style="font-size:13px;color:var(--muted);font-weight:600">min</span>
+            </div></div>
+            ${feedType==='Formula'||feedType==='Expressed'?'<div class="field"><label>Amount (mL)</label><input type="number" id="inp-amt" placeholder="e.g. 90" value="'+feedAmount+'"></div>':''}
+          </div>
+          <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="inp-backdate" value="${backdateVal||localDatetimeValue()}"></div>
+          <div class="field"><label>Note (optional)</label><input type="text" id="inp-note" placeholder="Any notes…" value="${noteVal}"></div>
+          <button class="btn-primary" style="background:var(--feed)" onclick="logEntry()">Save Feed</button>`:''
+      }
+    </div></div>`;
+  }
+
+  // ── WEE / POO MODAL ──
+  if(modal==='wee'||modal==='poo'){
+    const cfg=TYPES[modal];
+    h+=`<div class="overlay" onclick="closeModal()"><div class="sheet" onclick="event.stopPropagation()">
+      <div class="sheet-header"><div class="sheet-title"><span>${cfg.emoji}</span>Log ${cfg.label}</div><button class="close-btn" onclick="closeModal()">×</button></div>
+      <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="inp-backdate" value="${backdateVal||localDatetimeValue()}"></div>
+      <div class="field"><label>Note (optional)</label><input type="text" id="inp-note" placeholder="Any notes…" value="${noteVal}"></div>
+      <button class="btn-primary" style="background:${cfg.color}" onclick="logEntry()">Save ${cfg.label}</button>
+    </div></div>`;
+  }
+
+  // ── NAP MODAL ──
+  if(modal==='nap'){
+    h+=`<div class="overlay" onclick="closeModal()"><div class="sheet" onclick="event.stopPropagation()">
+      <div class="sheet-header"><div class="sheet-title"><span>😴</span>Log Nap</div><button class="close-btn" onclick="closeModal()">×</button></div>
+      ${activeNap?'<div class="warn-box">A nap timer is already running — stop it from the bar above first.</div>':''}
+      <div class="seg-row">
+        <button class="seg-btn${napMode==='timer'?' active':''}" onclick="setNapMode('timer')">⏱ Timer</button>
+        <button class="seg-btn${napMode==='manual'?' active':''}" onclick="setNapMode('manual')">✏️ Manual</button>
+      </div>
+      ${napMode==='timer'&&!activeNap
+        ?`<div class="info-box">Tap <strong>Start Nap Timer</strong>. Pause if baby stirs. Stop from the bar at the top when baby wakes.</div>
+          <button class="btn-primary" style="background:var(--nap)" onclick="logEntry()">😴 Start Nap Timer</button>`
+        :napMode==='manual'
+        ?`<div class="field"><label>Duration</label><div style="display:flex;gap:8px;align-items:center">
+            <input type="number" id="inp-nap-dur-h" min="0" max="12" placeholder="0" value="${napDurH}" style="width:64px;padding:10px 8px;border-radius:10px;border:1.5px solid #E8E8E8;font-size:15px;outline:none;text-align:center">
+            <span style="font-size:13px;color:var(--muted);font-weight:600">hr</span>
+            <input type="number" id="inp-nap-dur-m" min="0" max="59" placeholder="0" value="${napDurM}" style="width:64px;padding:10px 8px;border-radius:10px;border:1.5px solid #E8E8E8;font-size:15px;outline:none;text-align:center">
+            <span style="font-size:13px;color:var(--muted);font-weight:600">min</span>
+          </div></div>
+          <div class="field"><label>Where? (optional)</label><div class="pill-row">
+            ${NAP_LOCATIONS.map(l=>`<button class="pill${napLocation===l?' an':''}" onclick="setNapLoc('${l}')">${l}</button>`).join('')}
+          </div></div>
+          <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="inp-backdate" value="${backdateVal||localDatetimeValue()}"></div>
+          <div class="field"><label>Note (optional)</label><input type="text" id="inp-note" placeholder="Any notes…" value="${noteVal}"></div>
+          <button class="btn-primary" style="background:var(--nap)" onclick="logEntry()">Save Nap</button>`:''
+      }
+    </div></div>`;
+  }
+
+  // ── BATH MODAL ──
+  if(modal==='bath'){
+    h+=`<div class="overlay" onclick="closeModal()"><div class="sheet" onclick="event.stopPropagation()">
+      <div class="sheet-header"><div class="sheet-title"><span>🛁</span>Log Bath</div><button class="close-btn" onclick="closeModal()">×</button></div>
+      ${activeBath?'<div class="warn-box">A bath timer is already running — stop it from the bar above first.</div>':''}
+      <div class="seg-row">
+        <button class="seg-btn${bathMode==='timer'?' active':''}" onclick="setBathMode('timer')">⏱ Timer</button>
+        <button class="seg-btn${bathMode==='manual'?' active':''}" onclick="setBathMode('manual')">✏️ Manual</button>
+      </div>
+      ${bathMode==='timer'&&!activeBath
+        ?`<div class="info-box">Tap <strong>Start Bath Timer</strong> when you put baby in the water. Stop it when done.</div>
+          <div class="field"><label>Water temperature (optional)</label><div class="pill-row">
+            ${BATH_TEMPS.map(t=>`<button class="pill${bathTemp===t?' ab':''}" onclick="setBathTemp('${t}')">${t}</button>`).join('')}
+          </div></div>
+          <button class="btn-primary" style="background:var(--bath)" onclick="logEntry()">🛁 Start Bath Timer</button>`
+        :bathMode==='manual'
+        ?`<div class="field"><label>Duration (optional)</label><div style="display:flex;gap:8px;align-items:center">
+            <input type="number" id="inp-bath-dur-h" min="0" max="2" placeholder="0" value="${bathDurH}" style="width:64px;padding:10px 8px;border-radius:10px;border:1.5px solid #E8E8E8;font-size:15px;outline:none;text-align:center">
+            <span style="font-size:13px;color:var(--muted);font-weight:600">hr</span>
+            <input type="number" id="inp-bath-dur-m" min="0" max="59" placeholder="0" value="${bathDurM}" style="width:64px;padding:10px 8px;border-radius:10px;border:1.5px solid #E8E8E8;font-size:15px;outline:none;text-align:center">
+            <span style="font-size:13px;color:var(--muted);font-weight:600">min</span>
+          </div></div>
+          <div class="field"><label>Water temperature (optional)</label><div class="pill-row">
+            ${BATH_TEMPS.map(t=>`<button class="pill${bathTemp===t?' ab':''}" onclick="setBathTemp('${t}')">${t}</button>`).join('')}
+          </div></div>
+          <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="inp-backdate" value="${backdateVal||localDatetimeValue()}"></div>
+          <div class="field"><label>Note (optional)</label><input type="text" id="inp-bath-note" placeholder="e.g. Hair washed, enjoyed it…" value="${bathNotes}"></div>
+          <button class="btn-primary" style="background:var(--bath)" onclick="logEntry()">Save Bath</button>`:''
+      }
+    </div></div>`;
+  }
+
+  // ── EDIT CHART MODAL ──
+  if(modal==='edit-chart'&&editingChart){
+    const c=editingChart.chart;
+    const availableTypes=CHART_TYPES_MAP[c.metric]||'bar,line';
+    h+=`<div class="overlay" onclick="closeModal()"><div class="sheet" onclick="event.stopPropagation()">
+      <div class="sheet-header">
+        <div class="sheet-title">${editingChart.idx===-1?'Add chart':'Edit chart'}</div>
+        <button class="close-btn" onclick="closeModal()">×</button>
+      </div>
+      <div class="field"><label>Title</label><input type="text" id="inp-chart-title" value="${c.title}" oninput="editingChart.chart.title=this.value"></div>
+      <div class="field"><label>Metric</label>
+        <select id="inp-chart-metric" onchange="editingChart.chart.metric=this.value;editingChart.chart.type='bar';render()">
+          ${METRICS.map(m=>`<option value="${m.key}"${c.metric===m.key?' selected':''}>${m.label}</option>`).join('')}
+        </select>
+      </div>
+      ${c.metric!=='nappy'?`<div class="field"><label>Chart type</label>
+        <select id="inp-chart-type" onchange="editingChart.chart.type=this.value;render()">
+          ${availableTypes.split(',').map(t=>`<option value="${t}"${c.type===t?' selected':''}>${t==='bar'?'Bar chart':t==='line'?'Line chart':'Sleep bars'}</option>`).join('')}
+        </select>
+      </div>`:''}
+      <div class="field"><label>Time range</label>
+        <select id="inp-chart-range" onchange="editingChart.chart.range=parseInt(this.value);render()">
+          <option value="7"${c.range===7?' selected':''}>Last 7 days</option>
+          <option value="14"${c.range===14?' selected':''}>Last 14 days</option>
+          <option value="30"${c.range===30?' selected':''}>Last 30 days</option>
+        </select>
+      </div>
+      <div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:16px">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">Preview</div>
+        ${renderChart(c)}
+      </div>
+      <button class="btn-primary" style="background:var(--feed)" onclick="saveChart()">Save chart</button>
+    </div></div>`;
+  }
+
+  // ── SETUP MODAL ──
+  if(modal==='setup'){
+    const CODE=`const SHEET_NAME = 'Logs';
+const TIMER_KEY  = 'bt_timer_state';
+
+function doGet(e) {
+  const sheet = getSheet();
+  const rows  = sheet.getDataRange().getValues();
+  const logs  = rows.slice(1).map(r => ({
+    id: r[0], type: r[1], timestamp: r[2],
+    who: r[3], feedType: r[4], duration: r[5],
+    amount: r[6], note: r[7], napLocation: r[8],
+    bathTemp: r[9]
+  })).filter(r => r.id);
+  const props = PropertiesService.getScriptProperties();
+  const timerRaw = props.getProperty(TIMER_KEY);
+  const timerState = timerRaw ? JSON.parse(timerRaw) : null;
+  return json({ logs, timerState });
+}
+
+function doPost(e) {
+  const body  = JSON.parse(e.postData.contents);
+  const sheet = getSheet();
+  const props = PropertiesService.getScriptProperties();
+  if (body.action === 'add') {
+    const en = body.entry;
+    sheet.appendRow([en.id, en.type, en.timestamp,
+      en.who||'', en.feedType||'', en.duration||'',
+      en.amount||'', en.note||'', en.napLocation||'',
+      en.bathTemp||'']);
+  }
+  if (body.action === 'delete') {
+    const rows = sheet.getDataRange().getValues();
+    for (let i = rows.length-1; i >= 1; i--) {
+      if (rows[i][0] === body.id) { sheet.deleteRow(i+1); break; }
+    }
+  }
+  if (body.action === 'timer') {
+    props.setProperty(TIMER_KEY, JSON.stringify(body.state));
+  }
+  return json({ ok: true });
+}
+
+function getSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+    sheet.appendRow(['id','type','timestamp','who',
+      'feedType','duration','amount','note',
+      'napLocation','bathTemp']);
+  }
+  return sheet;
+}
+
+function json(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}`;
+    h+=`<div class="overlay" onclick="closeModal()"><div class="sheet" onclick="event.stopPropagation()">
+      <div class="sheet-header"><div class="sheet-title">🔗 Connect to Google Sheets</div><button class="close-btn" onclick="closeModal()">×</button></div>
+      <div class="info-box">Takes ~5 min, free. Both phones share data in real time.</div>
+      <div class="setup-step"><div class="step-num">1</div><div class="step-text"><strong>Create a Google Sheet</strong>sheets.google.com → New blank spreadsheet → name it "Baby Tracker"</div></div>
+      <div class="setup-step"><div class="step-num">2</div><div class="step-text"><strong>Open Apps Script</strong>Extensions → Apps Script → delete all existing code → paste the code below</div></div>
+      <div class="code-block"><button class="copy-code-btn" onclick="copyScript()">Copy</button><pre id="script-code">${CODE.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre></div>
+      <div class="setup-step"><div class="step-num">3</div><div class="step-text"><strong>Deploy → New deployment</strong>Type: Web app · Execute as: Me · Who has access: Anyone → Deploy → Authorise</div></div>
+      <div class="deploy-box">
+        <div class="deploy-row"><span class="deploy-label">Execute as</span><span class="deploy-val">Me</span></div>
+        <div class="deploy-row"><span class="deploy-label">Who has access</span><span class="deploy-val">Anyone</span></div>
+      </div>
+      <div class="setup-step"><div class="step-num">4</div><div class="step-text"><strong>Paste the Web App URL below</strong>Copy the URL ending in /exec after deploying</div></div>
+      <div class="field"><label>Web App URL</label><input type="url" id="inp-url" placeholder="https://script.google.com/…/exec" value="${tempUrl}"></div>
+      <div class="field"><label>Your name</label><input type="text" id="inp-who" placeholder="e.g. Tim" value="${WHO}"></div>
+      <button class="btn-primary" style="background:#6B9FD4" onclick="saveUrl()">Save & Connect</button>
+    </div></div>`;
+  }
+
+  // ── MENU MODAL ──
+  if(modal==='menu'){
+    h+=`<div class="overlay" onclick="closeModal()"><div class="sheet" onclick="event.stopPropagation()">
+      <div class="sheet-header"><div class="sheet-title">⋯ Settings</div><button class="close-btn" onclick="closeModal()">×</button></div>
+      <div class="field"><label>Your name</label><input type="text" id="inp-who" placeholder="e.g. Tim" value="${WHO}"></div>
+      <button class="btn-secondary" onclick="saveWho()">Save name</button>
+      <div class="divider"></div>
+      ${SCRIPT_URL
+        ?`<div class="info-box">✅ <strong>Connected to Google Sheets</strong></div><button class="btn-secondary" onclick="openModal('setup')">Change Script URL</button>`
+        :`<button class="btn-secondary" onclick="openModal('setup')">🔗 Set up Google Sheets sync</button>`
+      }
+      <div class="divider"></div>
+      ${confirmClear
+        ?`<div class="confirm-box"><p>Clear all local data?</p><div class="confirm-row"><button class="btn-cancel" onclick="confirmClear=false;render()">Cancel</button><button class="btn-danger-confirm" onclick="clearAll()">Clear</button></div></div>`
+        :logs.length>0?`<button class="btn-danger" onclick="confirmClear=true;render()">🗑️ Clear local data</button>`:''
+      }
+    </div></div>`;
+  }
+
+  document.getElementById('app').innerHTML=h;
+  const bdEl=document.getElementById('inp-backdate'); if(bdEl&&!backdateVal)bdEl.value=localDatetimeValue();
+  if((activeNap||activeFeed||activeBath)&&!tickInterval)startTick();
+}
+
+function copyScript(){
+  const code=document.getElementById('script-code').textContent;
+  navigator.clipboard.writeText(code).then(()=>showToast('📋 Code copied!')).catch(()=>showToast('Select and copy manually','#888'));
+}
+
+// Auto-sync every 30s
+setInterval(()=>{if(SCRIPT_URL&&!modal)syncWithSheet();},30000);
+setInterval(()=>{if(!modal)renderSyncBar();},60000);
+
+// Init
+try{const s=localStorage.getItem('bt-active-nap'); if(s)activeNap=JSON.parse(s);}catch(e){}
+try{const s=localStorage.getItem('bt-active-feed');if(s)activeFeed=JSON.parse(s);}catch(e){}
+try{const s=localStorage.getItem('bt-active-bath');if(s)activeBath=JSON.parse(s);}catch(e){}
+if(SCRIPT_URL){syncStatus='syncing';render();syncWithSheet();}
+else{syncStatus='no-url';render();}
+if(activeNap||activeFeed||activeBath)startTick();
+</script>
+</body>
+</html>
